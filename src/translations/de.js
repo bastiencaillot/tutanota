@@ -318,7 +318,7 @@ export default {
 		"credit_label": "Gutschrift",
 		"currentBalance_label": "Aktueller Kontostand",
 		"currentlyBooked_label": "Aktuell gebucht",
-		"customColorsInfo_msg": "Wenn du ein Feld leer lässt, wird die Standardfarbe aus dem hellen Farbschema verwendet.",
+		"customColorsInfo_msg": "Wenn du ein Feld leer lässt, wird die Standardfarbe aus dem ausgewählten Basisfarbschema verwendet.",
 		"customColors_label": "Eigene Farben",
 		"customDomainDeletePreconditionFailed_msg": "Bitte deaktiviere zunächst alle Benutzer*innen und alle E-Mail-Aliasse mit der Domain: {domainName}.",
 		"customDomainDeletePreconditionWhitelabelFailed_msg": "Bitte deaktiviere zunächst alle Benutzer*innen und alle E-Mail-Aliasse mit der Domain: {domainName} und entferne die Domain als Registrierungs-Domain.",
@@ -1416,6 +1416,9 @@ export default {
 		"yourCalendars_label": "Deine Kalender",
 		"yourFolders_action": "DEINE ORDNER",
 		"yourMessage_label": "Deine Nachricht",
-		"you_label": "Du"
+		"you_label": "Du",
+		"baseTheme_label": "Basisfarbschema",
+		"advanced_label": "Erweitert",
+		"accentColor_label": "Akzentfarbe"
 	}
 }

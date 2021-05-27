@@ -68,7 +68,7 @@ async function prepareAssets(stage, host, version) {
 	await fs.writeFile("build/polyfill.js", "")
 
 	return Promise.all([
-		createHtml(env.create(restUrl, version, "Browser")),
+		createHtml(env.create(null, version, "Browser")),
 		createHtml(env.create(restUrl, version, "App")),
 		createHtml(env.create(restUrl, version, "Desktop"))
 	])

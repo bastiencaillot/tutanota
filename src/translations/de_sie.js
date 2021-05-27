@@ -1415,6 +1415,9 @@ export default {
 		"yourCalendars_label": "Deine Kalender",
 		"yourFolders_action": "Ihre ORDNER",
 		"yourMessage_label": "Ihre Nachricht",
-		"you_label": "Sie"
+		"you_label": "Sie",
+		"baseTheme_label": "Basisfarbschema",
+		"advanced_label": "Erweitert",
+		"accentColor_label": "Akzentfarbe"
 	}
 }
