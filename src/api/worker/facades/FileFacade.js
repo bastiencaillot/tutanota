@@ -9,7 +9,7 @@ import type {File as TutanotaFile} from "../../entities/tutanota/File"
 import {_TypeModel as FileTypeModel} from "../../entities/tutanota/File"
 import {_TypeModel as FileDataTypeModel, FileDataTypeRef} from "../../entities/tutanota/FileData"
 import {assertNotNull, filterInt, neverNull} from "../../common/utils/Utils"
-import type {LoginFacade} from "./LoginFacade"
+import {LoginFacadeImpl} from "./LoginFacade"
 import {createFileDataDataPost} from "../../entities/tutanota/FileDataDataPost"
 import {GroupType, MAX_BLOB_SIZE_BYTES} from "../../common/TutanotaConstants"
 import {random} from "../crypto/Randomizer"
@@ -22,7 +22,6 @@ import {fileApp, uriToFileRef} from "../../../native/common/FileApp"
 import {convertToDataFile} from "../../common/DataFile"
 import type {SuspensionHandler} from "../SuspensionHandler"
 import {StorageService} from "../../entities/storage/Services"
-import {uint8ArrayToKey} from "../crypto/CryptoUtils"
 import {hash} from "../crypto/Sha256"
 import type {BlobId} from "../../entities/sys/BlobId"
 import {serviceRequest, serviceRequestVoid} from "../EntityWorker"
@@ -35,7 +34,6 @@ import {createTypeInfo} from "../../entities/sys/TypeInfo"
 import {base64ToUint8Array, uint8ArrayToBase64, uint8ArrayToHex} from "../../common/utils/Encoding"
 import {TypeRef} from "../../common/utils/TypeRef"
 import type {TypeModel} from "../../common/EntityTypes"
-import {LoginFacadeImpl} from "./LoginFacade"
 import {TutanotaService} from "../../entities/tutanota/Services"
 import type {FileBlobServiceGetReturn} from "../../entities/tutanota/FileBlobServiceGetReturn"
 import {FileBlobServiceGetReturnTypeRef} from "../../entities/tutanota/FileBlobServiceGetReturn"
@@ -47,6 +45,7 @@ import {ProgrammingError} from "../../common/error/ProgrammingError"
 import {getRestPath} from "../../entities/ServiceUtils"
 import {promiseMap, promiseTrySequentially} from "../../common/utils/PromiseUtils"
 import {FileDataReturnPostTypeRef} from "../../entities/tutanota/FileDataReturnPost"
+import {uint8ArrayToKey} from "../crypto/CryptoUtils"
 
 assertWorkerOrNode()
 
@@ -335,7 +334,7 @@ export class FileFacade {
 				}
 			}
 
-		} catch(e) {
+		} catch (e) {
 			// could not find existing blob
 		}
 

@@ -35,6 +35,13 @@ export const _TypeModel: TypeModel = {
 			"cardinality": "One",
 			"final": false,
 			"encrypted": false
+		},
+		"size": {
+			"id": 1898,
+			"type": "Number",
+			"cardinality": "One",
+			"final": false,
+			"encrypted": false
 		}
 	},
 	"associations": {},
@@ -52,4 +59,5 @@ export type Blob = {
 	_id: Id;
 	archiveId: Id;
 	blobId: Uint8Array;
+	size: NumberString;
 }

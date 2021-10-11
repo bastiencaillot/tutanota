@@ -37,7 +37,7 @@ import {lang} from "../../misc/LanguageViewModel"
 import {assertMainOrNode, isAndroidApp, isDesktop, isIOSApp} from "../../api/common/Env"
 import {Dialog} from "../../gui/base/Dialog"
 import type {DeferredObject} from "../../api/common/utils/Utils"
-import {defer, downcast, getMailBodyText, getMailHeaders, neverNull, noOp} from "../../api/common/utils/Utils"
+import {defer, downcast, getMailBodyText, neverNull, noOp} from "../../api/common/utils/Utils"
 import {addAll, contains} from "../../api/common/utils/ArrayUtils"
 import {startsWith} from "../../api/common/utils/StringUtils"
 import {Request} from "../../api/common/WorkerProtocol.js"
@@ -77,7 +77,6 @@ import {theme} from "../../gui/theme"
 import {TutanotaService} from "../../api/entities/tutanota/Services"
 import {HttpMethod} from "../../api/common/EntityFunctions"
 import {createListUnsubscribeData} from "../../api/entities/tutanota/ListUnsubscribeData"
-import {MailHeadersTypeRef} from "../../api/entities/tutanota/MailHeaders"
 import {client} from "../../misc/ClientDetector"
 import type {PosRect} from "../../gui/base/Dropdown"
 import {createAsyncDropDownButton, createDropDownButton, DomRectReadOnlyPolyfilled} from "../../gui/base/Dropdown"
@@ -119,7 +118,7 @@ import {isNewMailActionAvailable} from "../../gui/nav/NavFunctions"
 import {locator} from "../../api/main/MainLocator"
 import {exportMails} from "../export/Exporter"
 import {BannerType, InfoBanner} from "../../gui/base/InfoBanner"
-import {getCoordsOfMouseOrTouchEvent, createMoreSecondaryButtonAttrs, ifAllowedTutanotaLinks} from "../../gui/base/GuiUtils"
+import {createMoreSecondaryButtonAttrs, getCoordsOfMouseOrTouchEvent, ifAllowedTutanotaLinks} from "../../gui/base/GuiUtils"
 import type {Link} from "../../misc/HtmlSanitizer"
 import {stringifyFragment} from "../../gui/HtmlUtils"
 import {IndexingNotSupportedError} from "../../api/common/error/IndexingNotSupportedError"
@@ -547,37 +546,38 @@ export class MailViewer {
 		return dialog
 	}
 
-	_unsubscribe(): Promise<void> {
-		if (this.mail.headers) {
-			return showProgressDialog("pleaseWait_msg", this._entityClient.load(MailHeadersTypeRef, this.mail.headers).then(mailHeaders => {
-				let headers = getMailHeaders(mailHeaders).split("\n").filter(headerLine =>
-					headerLine.toLowerCase().startsWith("list-unsubscribe"))
-				if (headers.length > 0) {
-					return this._getSenderOfResponseMail().then((recipient) => {
-						const postData = createListUnsubscribeData({
-							mail: this.mail._id,
-							recipient,
-							headers: headers.join("\n"),
-						})
-						return serviceRequestVoid(TutanotaService.ListUnsubscribeService, HttpMethod.POST, postData)
-							.then(() => true)
-					})
-				} else {
-					return false
-				}
-			})).then(success => {
-				if (success) {
-					return Dialog.error("unsubscribeSuccessful_msg")
-				}
-			}).catch(e => {
-				if (e instanceof LockedError) {
-					return Dialog.error("operationStillActive_msg")
-				} else {
-					return Dialog.error("unsubscribeFailed_msg")
-				}
-			})
+	async _unsubscribe(): Promise<void> {
+		try {
+			let success = await showProgressDialog("pleaseWait_msg",
+				worker.mailFacade.getHeaders(this.mail)
+				      .then(mailHeaders => {
+					      let headers = (mailHeaders || "")
+						      .split("\n")
+						      .filter(headerLine => headerLine.toLowerCase().startsWith("list-unsubscribe"))
+
+					      if (headers.length > 0) {
+						      return this._getSenderOfResponseMail().then((recipient) => {
+							      const postData = createListUnsubscribeData({
+								      mail: this.mail._id,
+								      recipient,
+								      headers: headers.join("\n"),
+							      })
+							      return serviceRequestVoid(TutanotaService.ListUnsubscribeService, HttpMethod.POST, postData)
+								      .then(() => true)
+						      })
+					      } else {
+						      return false
+					      }
+				      }))
+			if (success) {
+				return Dialog.error("unsubscribeSuccessful_msg")
+			}
+		} catch (e) {
+			if (e instanceof LockedError) {
+				return Dialog.error("operationStillActive_msg")
+			}
 		}
-		return Promise.resolve()
+		return Dialog.error("unsubscribeFailed_msg")
 	}
 
 	actionButtons(): Children {
@@ -1537,18 +1537,15 @@ export class MailViewer {
 		})
 	}
 
-	_showHeaders() {
+
+	_showHeaders(): void {
+		this._showHeadersImpl()
+	}
+
+	async _showHeadersImpl(): Promise<void> {
 		if (!this.mailHeaderDialog.visible) {
-			if (this.mail.headers) {
-				this._entityClient.load(MailHeadersTypeRef, this.mail.headers).then(mailHeaders => {
-						this.mailHeaderInfo = getMailHeaders(mailHeaders)
-						this.mailHeaderDialog.show()
-					}
-				).catch(ofClass(NotFoundError, noOp))
-			} else {
-				this.mailHeaderInfo = lang.get("noMailHeadersInfo_msg")
-				this.mailHeaderDialog.show()
-			}
+			this.mailHeaderInfo = await worker.mailFacade.getHeaders(this.mail) ?? lang.get("noMailHeadersInfo_msg")
+			this.mailHeaderDialog.show()
 		}
 	}
 

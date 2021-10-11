@@ -269,11 +269,11 @@ export function randomIntFromInterval(min: number, max: number): number {
 }
 
 export function getMailBodyText(body: MailBody): string {
-	return body.compressedText || body.text || ""
+	return body.compressedText ?? body.text ?? ""
 }
 
 export function getMailHeaders(headers: MailHeaders): string {
-	return headers.compressedHeaders || headers.headers || ""
+	return headers.compressedHeaders ?? headers.headers ?? ""
 }
 
 

@@ -69,11 +69,15 @@ import {ofClass, promiseFilter, promiseMap} from "../../common/utils/PromiseUtil
 import {MailBodyTooLargeError} from "../../common/error/MailBodyTooLargeError"
 import {byteLength} from "../../common/utils/StringUtils"
 import {UNCOMPRESSED_MAX_SIZE} from "../Compression"
-import type {WorkerClient} from "../../main/WorkerClient"
 import type {PublicKeyReturn} from "../../entities/sys/PublicKeyReturn"
 import {PublicKeyReturnTypeRef} from "../../entities/sys/PublicKeyReturn"
 import {SysService} from "../../entities/sys/Services"
 import {createPublicKeyData} from "../../entities/sys/PublicKeyData"
+import {createBlobId} from "../../entities/sys/BlobId"
+import {SessionKeyNotFoundError} from "../../common/error/SessionKeyNotFoundError"
+import {decompressString} from "../crypto/InstanceMapper"
+import {ProgrammingError} from "../../common/error/ProgrammingError"
+import {MailHeadersTypeRef} from "../../entities/tutanota/MailHeaders"
 
 assertWorkerOrNode()
 
@@ -516,6 +520,44 @@ export class MailFacade {
 			createPublicKeyData({mailAddress}),
 			PublicKeyReturnTypeRef
 		).catch(ofClass(NotFoundError, () => null))
+	}
+
+	async getHeaders(mail: Mail): Promise<?string> {
+		if (mail.headers) {
+			return this._getHeadersLegacy(mail.headers)
+		} else if (mail.headersBlob) {
+			return this._getHeadersBlob(mail)
+		}
+	}
+
+	async _getHeadersLegacy(mailHeadersId: Id): Promise<?string> {
+		try {
+			const mailHeaders = await this._entity.load(MailHeadersTypeRef, mailHeadersId)
+			return mailHeaders.compressedHeaders ?? mailHeaders.headers ?? ""
+		} catch (e) {
+			if (!(e instanceof NotFoundError)) {
+				throw e
+			}
+		}
+	}
+
+	async _getHeadersBlob(mail: Mail): Promise<string> {
+		const key = await resolveSessionKey(MailTypeModel, mail)
+		if (key == null) {
+			throw new SessionKeyNotFoundError("could not find session key to decrypt mail header blob")
+		}
+		const blob = mail.headersBlob
+
+		if (blob == null) {
+			throw new ProgrammingError("trying to retrieve headers blob but there is no blob")
+		}
+		const blobData = await this._file.downloadBlob(
+			blob.archiveId,
+			createBlobId({blobId: blob.blobId}),
+			bitArrayToUint8Array(key)
+		)
+
+		return decompressString(blobData)
 	}
 }
 

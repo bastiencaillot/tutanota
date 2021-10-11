@@ -5,10 +5,9 @@ import {TutanotaService} from "../../api/entities/tutanota/Services"
 import {InboxRuleType, MAX_NBR_MOVE_DELETE_MAIL_SERVICE} from "../../api/common/TutanotaConstants"
 import {isDomainName, isRegularExpression} from "../../misc/FormatValidator"
 import {HttpMethod} from "../../api/common/EntityFunctions"
-import {asyncFind, debounce, getMailHeaders, noOp} from "../../api/common/utils/Utils"
+import {asyncFind, debounce} from "../../api/common/utils/Utils"
 import {assertMainOrNode} from "../../api/common/Env"
 import {lang} from "../../misc/LanguageViewModel"
-import {MailHeadersTypeRef} from "../../api/entities/tutanota/MailHeaders"
 import {logins} from "../../api/main/LoginController"
 import type {MailboxDetail} from "./MailModel"
 import {LockedError, NotFoundError, PreconditionFailedError} from "../../api/common/error/RestError"
@@ -18,6 +17,7 @@ import type {SelectorItemList} from "../../gui/base/DropDownSelectorN"
 import {splitInChunks} from "../../api/common/utils/ArrayUtils"
 import {EntityClient} from "../../api/common/EntityClient"
 import type {WorkerClient} from "../../api/main/WorkerClient"
+import {worker} from "../../api/main/WorkerClient"
 import {getElementId, getListId, isSameId} from "../../api/common/utils/EntityUtils";
 import {getInboxFolder} from "./MailUtils"
 import {ofClass, promiseMap} from "../../api/common/utils/PromiseUtils"
@@ -141,21 +141,17 @@ async function checkInboxRule(entityClient: EntityClient, mail: Mail, inboxRule:
 		} else if (ruleType === InboxRuleType.SUBJECT_CONTAINS) {
 			return _checkContainsRule(mail.subject, inboxRule)
 		} else if (ruleType === InboxRuleType.MAIL_HEADER_CONTAINS) {
-			if (mail.headers) {
-				return entityClient.load(MailHeadersTypeRef, mail.headers)
-				                   .then(mailHeaders => {
-					                   return _checkContainsRule(getMailHeaders(mailHeaders), inboxRule)
-				                   })
-				                   .catch(e => {
-					                   if (!(e instanceof NotFoundError)) {
-						                   // Does the outer catch already handle this case?
-						                   console.error("Error processing inbox rule:", e.message)
-					                   }
-					                   return false
-				                   })
-			} else {
-				return false
-			}
+			return worker.mailFacade.getHeaders(mail)
+			             .then(mailHeaders => {
+				             return _checkContainsRule(mailHeaders || "", inboxRule)
+			             })
+			             .catch(e => {
+				             if (!(e instanceof NotFoundError)) {
+					             // Does the outer catch already handle this case?
+					             console.error("Error processing inbox rule:", e.message)
+				             }
+				             return false
+			             })
 		} else {
 			console.warn("Unknown rule type: ", inboxRule.type)
 			return false

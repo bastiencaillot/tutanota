@@ -5,6 +5,7 @@ import {TypeRef} from "../../common/utils/TypeRef"
 import type {TypeModel} from "../../common/EntityTypes"
 
 import type {MailAddress} from "./MailAddress"
+import type {Blob} from "../sys/Blob"
 import type {EncryptedMailAddress} from "./EncryptedMailAddress"
 import type {MailRestriction} from "./MailRestriction"
 
@@ -183,6 +184,14 @@ export const _TypeModel: TypeModel = {
 			"refType": "MailAddress",
 			"dependency": null
 		},
+		"headersBlob": {
+			"id": 1211,
+			"type": "AGGREGATION",
+			"cardinality": "ZeroOrOne",
+			"final": true,
+			"refType": "Blob",
+			"dependency": "sys"
+		},
 		"replyTos": {
 			"id": 616,
 			"type": "AGGREGATION",
@@ -280,6 +289,7 @@ export type Mail = {
 
 	bccRecipients: MailAddress[];
 	ccRecipients: MailAddress[];
+	headersBlob: ?Blob;
 	replyTos: EncryptedMailAddress[];
 	restrictions: ?MailRestriction;
 	sender: MailAddress;
