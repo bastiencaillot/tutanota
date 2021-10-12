@@ -15,9 +15,7 @@ import type {Mail} from "../../api/entities/tutanota/Mail"
 import type {InboxRule} from "../../api/entities/tutanota/InboxRule"
 import type {SelectorItemList} from "../../gui/base/DropDownSelectorN"
 import {splitInChunks} from "../../api/common/utils/ArrayUtils"
-import {EntityClient} from "../../api/common/EntityClient"
 import type {WorkerClient} from "../../api/main/WorkerClient"
-import {worker} from "../../api/main/WorkerClient"
 import {getElementId, getListId, isSameId} from "../../api/common/utils/EntityUtils";
 import {getInboxFolder} from "./MailUtils"
 import {ofClass, promiseMap} from "../../api/common/utils/PromiseUtils"
@@ -82,13 +80,13 @@ export function getInboxRuleTypeName(type: string): string {
  * Checks the mail for an existing inbox rule and moves the mail to the target folder of the rule.
  * @returns true if a rule matches otherwise false
  */
-export function findAndApplyMatchingRule(worker: WorkerClient, entityClient: EntityClient, mailboxDetail: MailboxDetail, mail: Mail,
+export function findAndApplyMatchingRule(worker: WorkerClient, mailboxDetail: MailboxDetail, mail: Mail,
                                          applyRulesOnServer: boolean): Promise<?IdTuple> {
 	if (mail._errors || !mail.unread || !isInboxList(mailboxDetail, getListId(mail))
 		|| !logins.getUserController().isPremiumAccount()) {
 		return Promise.resolve(null)
 	}
-	return _findMatchingRule(entityClient, mail, logins.getUserController().props.inboxRules).then(inboxRule => {
+	return _findMatchingRule(worker, mail, logins.getUserController().props.inboxRules).then(inboxRule => {
 		if (inboxRule) {
 			let targetFolder = mailboxDetail.folders.filter(folder => folder !== getInboxFolder(mailboxDetail.folders))
 			                                .find(folder => isSameId(folder._id, inboxRule.targetFolder))
@@ -119,11 +117,11 @@ export function findAndApplyMatchingRule(worker: WorkerClient, entityClient: Ent
  * Finds the first matching inbox rule for the mail and returns it.
  * export only for testing
  */
-export async function _findMatchingRule(entityClient: EntityClient, mail: Mail, rules: InboxRule []): Promise<?InboxRule> {
-	return asyncFind(rules, (rule) => checkInboxRule(entityClient, mail, rule))
+export async function _findMatchingRule(worker: WorkerClient, mail: Mail, rules: InboxRule []): Promise<?InboxRule> {
+	return asyncFind(rules, (rule) => checkInboxRule(worker, mail, rule))
 }
 
-async function checkInboxRule(entityClient: EntityClient, mail: Mail, inboxRule: InboxRule): Promise<boolean> {
+async function checkInboxRule(worker: WorkerClient, mail: Mail, inboxRule: InboxRule): Promise<boolean> {
 	const ruleType = inboxRule.type;
 	try {
 		if (ruleType === InboxRuleType.FROM_EQUALS) {

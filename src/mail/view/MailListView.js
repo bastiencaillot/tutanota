@@ -1,6 +1,7 @@
 // @flow
 import m from "mithril"
 import {lang} from "../../misc/LanguageViewModel"
+import type {VirtualRow} from "../../gui/base/List"
 import {List} from "../../gui/base/List"
 import {HttpMethod} from "../../api/common/EntityFunctions"
 import {serviceRequestVoid} from "../../api/main/Entity"
@@ -36,7 +37,6 @@ import {AsyncResult} from "../../api/common/utils/AsyncResult"
 import {deduplicateFilenames} from "../../api/common/utils/FileUtils"
 import {makeMailBundle} from "../export/Bundler"
 import {ListColumnWrapper} from "../../gui/ListColumnWrapper"
-import type {VirtualRow} from "../../gui/base/List"
 
 assertMainOrNode()
 
@@ -243,7 +243,7 @@ export class MailListView implements MComponent<void> {
 							const key = mapKey(mail)
 							const downloadPromise =
 								import("../../misc/HtmlSanitizer")
-									.then(({htmlSanitizer}) => makeMailBundle(mail, locator.entityClient, worker.fileFacade, htmlSanitizer))
+									.then(({htmlSanitizer}) => makeMailBundle(mail, locator.entityClient, worker.mailFacade, worker.fileFacade, htmlSanitizer))
 									.then(tap(() => progressMonitor.workDone(1)))
 									.then(bundle => generateMailFile(bundle, name, exportMode))
 									.then(tap(() => progressMonitor.workDone(1)))
@@ -374,7 +374,7 @@ export class MailListView implements MComponent<void> {
 				if (isInboxList(mailboxDetail, this.listId)) {
 					// filter emails
 					return promiseFilter(mails, (mail) => {
-						return findAndApplyMatchingRule(worker, locator.entityClient, mailboxDetail, mail, true)
+						return findAndApplyMatchingRule(worker, mailboxDetail, mail, true)
 							.then(matchingMailId => !matchingMailId)
 					}).then(inboxMails => {
 						if (mails.length === count && inboxMails.length < mails.length) {

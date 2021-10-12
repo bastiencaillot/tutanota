@@ -303,7 +303,7 @@ export class MailModel {
 					await this.getMailboxDetailsForMailListId(update.instanceListId)
 					          .then(mailboxDetail => {
 						          // We only apply rules on server if we are the leader in case of incoming messages
-						          return findAndApplyMatchingRule(this._worker, this._entityClient, mailboxDetail, mail, this._worker.isLeader())
+						          return findAndApplyMatchingRule(this._worker, mailboxDetail, mail, this._worker.isLeader())
 					          })
 					          .then((newId) => this._showNotification(newId || mailId))
 					          .catch(noOp)

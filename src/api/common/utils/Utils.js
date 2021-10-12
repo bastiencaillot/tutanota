@@ -272,11 +272,6 @@ export function getMailBodyText(body: MailBody): string {
 	return body.compressedText ?? body.text ?? ""
 }
 
-export function getMailHeaders(headers: MailHeaders): string {
-	return headers.compressedHeaders ?? headers.headers ?? ""
-}
-
-
 export function errorToString(error: Error): string {
 	let errorString = error.name ? error.name : "?"
 	if (error.message) {

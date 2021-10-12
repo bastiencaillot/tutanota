@@ -679,7 +679,9 @@ export class MailViewer {
 					if (!this._isAnnouncement() && !client.isMobileDevice() && !logins.isEnabled(FeatureType.DisableMailExport)) {
 						moreButtons.push({
 							label: "export_action",
-							click: () => showProgressDialog("pleaseWait_msg", exportMails([this.mail], locator.entityClient, worker.fileFacade)),
+							click: () => showProgressDialog("pleaseWait_msg",
+								exportMails([this.mail], locator.entityClient, worker.mailFacade, worker.fileFacade)
+							),
 							icon: () => Icons.Export,
 							type: ButtonType.Dropdown,
 						})

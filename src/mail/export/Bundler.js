@@ -9,7 +9,7 @@ import {getLetId} from "../../api/common/utils/EntityUtils"
 import type {HtmlSanitizer} from "../../misc/HtmlSanitizer"
 import {promiseMap} from "../../api/common/utils/PromiseUtils"
 import type {FileFacade} from "../../api/worker/facades/FileFacade"
-import {worker} from "../../api/main/WorkerClient"
+import type {MailFacade} from "../../api/worker/facades/MailFacade"
 
 /**
  * Used to pass all downloaded mail stuff to the desktop side to be exported as a file
@@ -39,10 +39,9 @@ export type MailBundle = {
  * Downloads the mail body and the attachments for an email, to prepare for exporting
  * @param mail
  * @param entityClient
- * @param worker
  * @param sanitizer
  */
-export function makeMailBundle(mail: Mail, entityClient: EntityClient, fileFacade: FileFacade, sanitizer: HtmlSanitizer): Promise<MailBundle> {
+export function makeMailBundle(mail: Mail, entityClient: EntityClient, mailFacade: MailFacade, fileFacade: FileFacade, sanitizer: HtmlSanitizer): Promise<MailBundle> {
 	const bodyTextPromise = entityClient.load(MailBodyTypeRef, mail.body)
 	                                    .then(getMailBodyText)
 	                                    .then(body =>
@@ -58,7 +57,7 @@ export function makeMailBundle(mail: Mail, entityClient: EntityClient, fileFacad
 		promiseMap(mail.attachments, fileId => entityClient.load(FileTypeRef, fileId)
 		                                                   .then((file) => fileFacade.downloadFileContent(file)))
 
-	const headersPromise = worker.mailFacade.getHeaders(mail)
+	const headersPromise = mailFacade.getHeaders(mail)
 
 	const recipientMapper = addr => ({address: addr.address, name: addr.name})
 	return Promise.all([bodyTextPromise, attachmentsPromise, headersPromise])

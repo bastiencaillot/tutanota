@@ -28,10 +28,14 @@ o.spec("Bundler", function () {
 		const sentOn = new Date()
 		const receivedOn = new Date()
 		const headers = "this is the headers"
+
 		const entityClient = {
-			load: o.spy(() => Promise.resolve({text: body, headers})),
+			load: o.spy(() => Promise.resolve({text: body})),
 		}
 
+		const mailFacade = {
+			getHeaders: o.spy(() => Promise.resolve(headers))
+		}
 		const fileFacade = {
 			downloadFileContent: o.spy(() => Promise.resolve("attachment"))
 		}
@@ -59,7 +63,7 @@ o.spec("Bundler", function () {
 
 		})
 
-		const bundle = await makeMailBundle(mail, downcast(entityClient), downcast(fileFacade), downcast(sanitizer))
+		const bundle = await makeMailBundle(mail, downcast(entityClient), downcast(mailFacade), downcast(fileFacade), downcast(sanitizer))
 
 		o(bundle.mailId).deepEquals(mailId)
 		o(bundle.subject).equals(subject)
@@ -74,9 +78,11 @@ o.spec("Bundler", function () {
 		o(bundle.headers).equals(headers)
 		o(bundle.attachments).deepEquals(["attachment", "attachment", "attachment"])
 		const compareCall = (typeRef, id) => call => isSameTypeRef(call.args[0], typeRef) && isSameId(call.args[1], id)
-		const assertLoaded = (typeRef, id) => o(entityClient.load.calls.find(compareCall(typeRef, id))).notEquals(undefined)(`assertLoaded TypeRef(${typeRef.app}, ${typeRef.type}) ${id.toString()}`)
+		const assertLoaded = (typeRef, id) => o(entityClient.load.calls.find(compareCall(typeRef, id)))
+			.notEquals(undefined)(`assertLoaded TypeRef(${typeRef.app}, ${typeRef.type}) ${id.toString()}`)
 		assertLoaded(MailBodyTypeRef, mailBodyId)
-		assertLoaded(MailHeadersTypeRef, mailHeadersId)
+		o(mailFacade.getHeaders.calls.find(call => isSameId(mail._id, call.args[0]._id)))
+			.notEquals(undefined)("Headers were not loaded")
 		attachmentIds.forEach(assertLoaded.bind(null, FileTypeRef))
 		o(sanitizer.sanitize.calls[0].args).deepEquals([
 			body, {blockExternalContent: false, allowRelativeLinks: false, usePlaceholderForInlineImages: false}
