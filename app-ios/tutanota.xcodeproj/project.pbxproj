@@ -206,6 +206,8 @@
 		3DC299FB267358AF00E1E79F /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299F9267358AF00E1E79F /* ThemeManager.swift */; };
 		3DC299FD2673668000E1E79F /* QueryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299FC2673668000E1E79F /* QueryUtils.swift */; };
 		3DC299FE2673668000E1E79F /* QueryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299FC2673668000E1E79F /* QueryUtils.swift */; };
+		3DCE7AA22719D04B0085E40D /* UserPreferenceFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */; };
+		3DCE7AA32719D04B0085E40D /* UserPreferenceFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */; };
 		3DD4A08B20F8C6240086EB36 /* TUTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4A08A20F8C6240086EB36 /* TUTViewController.m */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
 		3DD4A09020F8C6260086EB36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A08F20F8C6260086EB36 /* Assets.xcassets */; };
 		3DD4A09320F8C6260086EB36 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A09120F8C6260086EB36 /* LaunchScreen.storyboard */; };
@@ -354,6 +356,7 @@
 		3DB9A20D22BA5C23004EA08F /* TUTUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTUtils.m; sourceTree = "<group>"; };
 		3DC299F9267358AF00E1E79F /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		3DC299FC2673668000E1E79F /* QueryUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryUtils.swift; sourceTree = "<group>"; };
+		3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferenceFacade.swift; sourceTree = "<group>"; };
 		3DD4A08320F8C6240086EB36 /* tutanota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tutanota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DD4A08920F8C6240086EB36 /* TUTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TUTViewController.h; sourceTree = "<group>"; };
 		3DD4A08A20F8C6240086EB36 /* TUTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTViewController.m; sourceTree = "<group>"; };
@@ -502,6 +505,7 @@
 				3D2DE2C723FC387700FFB95B /* AsyncBlockOperation.m */,
 				3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */,
 				3DC299FC2673668000E1E79F /* QueryUtils.swift */,
+				3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1491,6 +1495,7 @@
 				3D4F1BFC26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
 				3D378EF32536F79A0001F1F3 /* TUTViewController.m in Sources */,
 				3D378EF42536F79A0001F1F3 /* TUTSseInfo.m in Sources */,
+				3DCE7AA32719D04B0085E40D /* UserPreferenceFacade.swift in Sources */,
 				3D378EF52536F79A0001F1F3 /* TUTUserPreferenceFacade.m in Sources */,
 				3D378EF62536F79A0001F1F3 /* TUTIdTuple.m in Sources */,
 				3D0EB1F726F489AD002E5102 /* KeychainManager.swift in Sources */,
@@ -1530,6 +1535,7 @@
 				3D4F1BFA26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
 				3DD4A08B20F8C6240086EB36 /* TUTViewController.m in Sources */,
 				3D6C6D0422AF9BD100289576 /* TUTSseInfo.m in Sources */,
+				3DCE7AA22719D04B0085E40D /* UserPreferenceFacade.swift in Sources */,
 				3D3697D722AA8CE9007F0A83 /* TUTUserPreferenceFacade.m in Sources */,
 				3D57BEBF22B7979D00205B1B /* TUTIdTuple.m in Sources */,
 				3D0EB1F626F489AD002E5102 /* KeychainManager.swift in Sources */,

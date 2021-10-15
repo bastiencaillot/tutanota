@@ -28,10 +28,10 @@ enum HttpStatusCode: Int {
 @objc
 class AlarmManager : NSObject {
   private let keychainManager: KeychainManager
-  private let userPreference: TUTUserPreferenceFacade
+  private let userPreference: UserPreferenceFacade
   private let fetchQueue: OperationQueue
   
-  init(keychainManager: KeychainManager, userPreference: TUTUserPreferenceFacade) {
+  init(keychainManager: KeychainManager, userPreference: UserPreferenceFacade) {
     self.keychainManager = keychainManager
     self.userPreference = userPreference
     self.fetchQueue = OperationQueue()

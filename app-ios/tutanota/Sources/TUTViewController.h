@@ -12,7 +12,7 @@
 
 @interface TUTViewController : UIViewController<UIScrollViewDelegate>
 
-- (instancetype)initWithPreferenceFacade:(TUTUserPreferenceFacade *)preferenceFacade
+- (instancetype)initWithPreferenceFacade:(NSObject *)preferenceFacade
                             alarmManager:(NSObject *)alarmManager;
 
 @end

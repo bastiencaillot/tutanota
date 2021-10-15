@@ -7,7 +7,7 @@ class AppDelegate : UIResponder,
   var window: UIWindow?
   
   private var pushTokenCallback: ((String?, Error?) -> Void)?
-  private let userPreferences = TUTUserPreferenceFacade()
+  private let userPreferences = UserPreferenceFacade()
   private var alarmManager: AlarmManager!
   private var viewController: TUTViewController!
   
