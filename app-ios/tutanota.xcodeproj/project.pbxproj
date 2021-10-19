@@ -208,6 +208,8 @@
 		3DC299FE2673668000E1E79F /* QueryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299FC2673668000E1E79F /* QueryUtils.swift */; };
 		3DCE7AA22719D04B0085E40D /* UserPreferenceFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */; };
 		3DCE7AA32719D04B0085E40D /* UserPreferenceFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */; };
+		3DCE7AA7271D63BF0085E40D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AA6271D63BF0085E40D /* ViewController.swift */; };
+		3DCE7AA8271D63BF0085E40D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AA6271D63BF0085E40D /* ViewController.swift */; };
 		3DD4A08B20F8C6240086EB36 /* TUTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4A08A20F8C6240086EB36 /* TUTViewController.m */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
 		3DD4A09020F8C6260086EB36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A08F20F8C6260086EB36 /* Assets.xcassets */; };
 		3DD4A09320F8C6260086EB36 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A09120F8C6260086EB36 /* LaunchScreen.storyboard */; };
@@ -357,6 +359,7 @@
 		3DC299F9267358AF00E1E79F /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		3DC299FC2673668000E1E79F /* QueryUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryUtils.swift; sourceTree = "<group>"; };
 		3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferenceFacade.swift; sourceTree = "<group>"; };
+		3DCE7AA6271D63BF0085E40D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3DD4A08320F8C6240086EB36 /* tutanota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tutanota.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DD4A08920F8C6240086EB36 /* TUTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TUTViewController.h; sourceTree = "<group>"; };
 		3DD4A08A20F8C6240086EB36 /* TUTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTViewController.m; sourceTree = "<group>"; };
@@ -447,6 +450,7 @@
 				3DD4A08A20F8C6240086EB36 /* TUTViewController.m */,
 				3DC299F9267358AF00E1E79F /* ThemeManager.swift */,
 				3D0EB1F826F49E36002E5102 /* AppDelegate.swift */,
+				3DCE7AA6271D63BF0085E40D /* ViewController.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -1139,6 +1143,16 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		3DCE7AA5271D58230085E40D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		3D378EEE2536F79A0001F1F3 /* tutanota debug */ = {
 			isa = PBXNativeTarget;
@@ -1161,6 +1175,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3DD4A0A420F8C6260086EB36 /* Build configuration list for PBXNativeTarget "tutanota" */;
 			buildPhases = (
+				3DCE7AA5271D58230085E40D /* Headers */,
 				3DD4A07F20F8C6240086EB36 /* Sources */,
 				3DD4A08020F8C6240086EB36 /* Frameworks */,
 				3DD4A08120F8C6240086EB36 /* Resources */,
@@ -1515,6 +1530,7 @@
 				3DC299FB267358AF00E1E79F /* ThemeManager.swift in Sources */,
 				3D378F042536F79A0001F1F3 /* TUTFileUtil.m in Sources */,
 				3D378F052536F79A0001F1F3 /* TUTSubKeys.m in Sources */,
+				3DCE7AA8271D63BF0085E40D /* ViewController.swift in Sources */,
 				3D378F062536F79A0001F1F3 /* TUTContactsSource.m in Sources */,
 				3D378F082536F79A0001F1F3 /* TUTCrypto.m in Sources */,
 				3D378F092536F79A0001F1F3 /* TUTLog.m in Sources */,
@@ -1555,6 +1571,7 @@
 				3DC299FA267358AF00E1E79F /* ThemeManager.swift in Sources */,
 				3D891F092105B12F0031E528 /* TUTFileUtil.m in Sources */,
 				3DE7B3442135855F003415BE /* TUTSubKeys.m in Sources */,
+				3DCE7AA7271D63BF0085E40D /* ViewController.swift in Sources */,
 				3D74536F2108A1FD00B16F2E /* TUTContactsSource.m in Sources */,
 				3D891F0B2105B12F0031E528 /* TUTCrypto.m in Sources */,
 				3D63A0E3233D009E00D05259 /* TUTLog.m in Sources */,

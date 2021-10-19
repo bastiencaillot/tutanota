@@ -49,7 +49,7 @@ class AlarmManager : NSObject {
         completionHandler(error)
       }
       
-      guard let sseInfo = self.userPreference.sseInfo() else {
+      guard let sseInfo = self.userPreference.sseInfo else {
         TUTSLog("No stored SSE info")
         complete(error: nil)
         return
@@ -129,7 +129,7 @@ class AlarmManager : NSObject {
   @objc
   func processNewAlarms(_ notifications: Array<TUTAlarmNotification>, completion: @escaping (Error?) -> Void) {
     DispatchQueue.global(qos: .utility).async {
-      var savedNotifications = self.userPreference.alarms()
+      var savedNotifications = self.userPreference.alarms
       var resultError: Error?
       for alarmNotification in notifications {
         do {
@@ -141,7 +141,7 @@ class AlarmManager : NSObject {
       }
       
       TUTSLog("Finished processing \(notifications.count) alarms")
-      self.userPreference.storeAlarms(savedNotifications)
+      self.userPreference.store(alarms: savedNotifications)
       completion(resultError)
     }
   }
@@ -185,11 +185,11 @@ class AlarmManager : NSObject {
   }
   
   private func savedAlarms() -> Set<TUTAlarmNotification> {
-    let savedNotifications = self.userPreference.alarms()
+    let savedNotifications = self.userPreference.alarms
     let set = Set(savedNotifications)
     if set.count != savedNotifications.count {
       TUTSLog("Duplicated alarms detected, re-saving...")
-      self.userPreference.storeAlarms(Array(set))
+      self.userPreference.store(alarms: Array(set))
     }
     return set
   }
@@ -225,7 +225,7 @@ class AlarmManager : NSObject {
   }
   
   private func unscheduleAllAlarms(userId: String?) {
-    let alarms = self.userPreference.alarms()
+    let alarms = self.userPreference.alarms
     for alarm in alarms {
       if userId != nil && userId != alarm.user {
         continue
