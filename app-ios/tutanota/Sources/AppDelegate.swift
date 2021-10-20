@@ -9,7 +9,7 @@ class AppDelegate : UIResponder,
   private var pushTokenCallback: ((String?, Error?) -> Void)?
   private let userPreferences = UserPreferenceFacade()
   private var alarmManager: AlarmManager!
-  private var viewController: TUTViewController!
+  private var viewController: ViewController!
   
   @objc
   func registerForPushNotifications(
@@ -37,8 +37,16 @@ class AppDelegate : UIResponder,
     let keychainManager = KeychainManager()
     self.alarmManager = AlarmManager(keychainManager: keychainManager, userPreference: userPreferences)
     self.window = UIWindow(frame: UIScreen.main.bounds)
-    self.viewController = TUTViewController(
-      preferenceFacade: self.userPreferences,
+//    self.viewController = TUTViewController(
+//      preferenceFacade: self.userPreferences,
+//      alarmManager: self.alarmManager
+//    )
+    self.viewController = ViewController(
+      crypto: TUTCrypto(),
+      contactsSource: TUTContactsSource(),
+      themeManager: ThemeManager(),
+      keychainManager: keychainManager,
+      userPreferences: userPreferences,
       alarmManager: self.alarmManager
     )
     self.window!.rootViewController = viewController

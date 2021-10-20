@@ -66,11 +66,9 @@ class UserPreferenceFacade : NSObject {
       }
     }
   }
-  
-  @objc
+    
   func removeUser(_ userId: String) {
-    let sseInfo = self.sseInfo;
-    guard let sseInfo = sseInfo else {
+    guard let sseInfo = self.sseInfo else {
       TUTSLog("Removing userId but there's no SSEInfo stored")
       return
     }
