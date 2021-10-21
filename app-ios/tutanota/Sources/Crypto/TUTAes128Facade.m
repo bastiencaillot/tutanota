@@ -120,7 +120,7 @@ static const uint8_t FIXED_IV_BYTES[] = {
     return decryptedKey;
 }
 
-+ (NSString *)decryptBase64String:(NSString *)string encryptionKey:(NSData *)encryptionKey error:(NSError **)error {
++ (NSString *_Nullable)decryptBase64String:(NSString *)string encryptionKey:(NSData *)encryptionKey error:(NSError **)error {
     NSData *data = [TUTEncodingConverter base64ToBytes:string];
     NSData *decrypted = [TUTAes128Facade decrypt: data withKey:encryptionKey error:error];
     if (*error) {

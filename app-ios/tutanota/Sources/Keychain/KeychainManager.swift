@@ -2,9 +2,7 @@ import Foundation
 
 let TAG = "de.tutao.tutanota.notificationkey."
 
-@objc
 class KeychainManager : NSObject {
-  @objc
   func storeKey(_ key: Data, withId keyId: String) throws {
     let keyTag = self.keyTagFromKeyId(keyId: keyId)
     
@@ -36,12 +34,10 @@ class KeychainManager : NSObject {
     }
   }
   
-  // We can't throw because we return optional and call it from objc
   func getKey(keyId: String) throws -> Data? {
     try self.getKeyImpl(keyId: keyId)
   }
   
-  @objc
   func removePushIdentifierKeys() throws {
     let deleteQuery: [String: Any] = [
       kSecClass as String: kSecClassKey

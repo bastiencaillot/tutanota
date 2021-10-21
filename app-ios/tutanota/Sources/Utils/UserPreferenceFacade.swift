@@ -13,12 +13,7 @@ fileprivate let ALARMS_KEY = "repeatingAlarmNotification"
 fileprivate let LAST_PROCESSED_NOTIFICAION_ID_KEY = "lastProcessedNotificationId"
 fileprivate let LAST_MISSED_NOTIFICATION_CHECK_TIME = "lastMissedNotificationCheckTime"
 
-@objc
-class UserPreferenceFacade : NSObject {
-  override init() {
-  }
-  
-  @objc
+class UserPreferenceFacade {
   var sseInfo: TUTSseInfo? {
     get {
       let dict = UserDefaults.standard.dictionary(forKey: SSE_INFO_KEY)
@@ -26,7 +21,6 @@ class UserPreferenceFacade : NSObject {
     }
   }
   
-  @objc
   func store(pushIdentifier: String, userId: String, sseOrigin: String) {
     if let sseInfo = self.sseInfo {
         sseInfo.pushIdentifier = pushIdentifier
@@ -46,21 +40,17 @@ class UserPreferenceFacade : NSObject {
     }
   }
   
-  @objc
-  func store(alarms: [TUTAlarmNotification]) {
-    let notificationsJson = alarms.map { $0.jsonDict }
-    let jsonData = try! JSONSerialization.data(withJSONObject: notificationsJson, options: [])
+  func store(alarms: [EncryptedAlarmNotification]) {
+    let jsonData = try! JSONEncoder().encode(alarms)
     UserDefaults.standard.setValue(jsonData, forKey: ALARMS_KEY)
   }
   
-  @objc
-  var alarms: [TUTAlarmNotification] {
+  var alarms: [EncryptedAlarmNotification] {
     get {
       let defaults = UserDefaults.standard
       let notificationsJsonData = defaults.object(forKey: ALARMS_KEY)
       if let notificationsJsonData = notificationsJsonData {
-        let notificationJsonArray = try! JSONSerialization.jsonObject(with: notificationsJsonData as! Data, options: []) as! Array<Dictionary<String, Any>>
-        return notificationJsonArray.map { TUTAlarmNotification.fromJSON($0) }
+        return try! JSONDecoder().decode(Array<EncryptedAlarmNotification>.self, from: notificationsJsonData as! Data)
       } else {
         return []
       }
@@ -80,7 +70,6 @@ class UserPreferenceFacade : NSObject {
     self.put(sseInfo: sseInfo)
   }
   
-  @objc
   var lastProcessedNotificationId: String? {
     get {
       return UserDefaults.standard.object(forKey: LAST_PROCESSED_NOTIFICAION_ID_KEY) as! String?
@@ -90,7 +79,6 @@ class UserPreferenceFacade : NSObject {
     }
   }
   
-  @objc
   var lastMissedNotificationCheckTime: Date? {
     get {
       return UserDefaults.standard.object(forKey: LAST_MISSED_NOTIFICATION_CHECK_TIME) as! Date?
@@ -100,7 +88,6 @@ class UserPreferenceFacade : NSObject {
     }
   }
   
-  @objc
   func clear() {
     TUTSLog("UserPreference clear")
     let sseInfo = self.sseInfo

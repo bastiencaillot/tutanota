@@ -330,9 +330,8 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
       }
     case "scheduleAlarms":
       let alarmsJson = args[0] as! [[String : Any]]
-      let alarms = alarmsJson.map { json in
-        TUTAlarmNotification.fromJSON(json)
-      }
+      let alarmsData = try! JSONSerialization.data(withJSONObject: alarmsJson, options: [])
+      let alarms = try! JSONDecoder().decode(Array<EncryptedAlarmNotification>.self, from: alarmsData)
       self.alarmManager.processNewAlarms(alarms) { error in
         if let error = error {
           sendResponseBlock(value: nil, error: error)
