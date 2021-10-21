@@ -43,7 +43,7 @@ class AppDelegate : UIResponder,
 //    )
     self.viewController = ViewController(
       crypto: TUTCrypto(),
-      contactsSource: TUTContactsSource(),
+      contactsSource: ContactsSource(),
       themeManager: ThemeManager(),
       keychainManager: keychainManager,
       userPreferences: userPreferences,

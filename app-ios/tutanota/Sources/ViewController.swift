@@ -14,7 +14,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
   private let crypto: TUTCrypto
   private var fileChooser: TUTFileChooser!
   private var fileUtil: TUTFileUtil!
-  private let contactsSource: TUTContactsSource
+  private let contactsSource: ContactsSource
   private let themeManager: ThemeManager
   private let keychainManager: KeychainManager
   private let userPreferences: UserPreferenceFacade
@@ -31,7 +31,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
   
   init(
     crypto: TUTCrypto,
-    contactsSource: TUTContactsSource,
+    contactsSource: ContactsSource,
     themeManager: ThemeManager,
     keychainManager: KeychainManager,
     userPreferences: UserPreferenceFacade,
@@ -293,7 +293,14 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         self.sendErrorResponse(requestId: requestId, err: error)
       }
     case "findSuggestions":
-      self.contactsSource.searchForContacts(usingQuery: args[0] as! String, completion: sendResponseBlock)
+      self.contactsSource.search(query: args[0] as! String) { contacts, err in
+        if let err = err {
+          sendResponseBlock(value: nil, error: err)
+        } else {
+          let json = contacts!.map { c in self.encodeToDict(value: c) }
+          sendResponseBlock(value: json, error: nil)
+        }
+      }
     case "closePushNotifications":
       UIApplication.shared.applicationIconBadgeNumber = 0
       sendResponseBlock(value: NSNull(), error: nil)
@@ -481,5 +488,11 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     get {
       UIApplication.shared.delegate as! AppDelegate
     }
+  }
+  
+  private func encodeToDict<T: Encodable>(value: T) -> Any {
+    // This is not very efficient but hopefully we only need it temporarily
+    let data = try! JSONEncoder().encode(value)
+    return try! JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed])
   }
 }
