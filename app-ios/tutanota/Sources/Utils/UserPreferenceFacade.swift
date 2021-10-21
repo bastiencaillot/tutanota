@@ -113,6 +113,6 @@ class UserPreferenceFacade : NSObject {
   }
   
   private func put(sseInfo: TUTSseInfo) {
-    UserDefaults.standard.setValue(sseInfo.toDict, forKey: SSE_INFO_KEY)
+    UserDefaults.standard.setValue(sseInfo.toDict(), forKey: SSE_INFO_KEY)
   }
 }

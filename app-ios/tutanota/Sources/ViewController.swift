@@ -23,7 +23,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
   private var webView: WKWebView!
   
   private var requestId = 0
-  private var requests = [String : (([String : Any]) -> Void)]()
+  private var requests = [String : ((Any?) -> Void)]()
   private var keyboardSize = 0
   private var webviewInitialized = false
   private var requestsBeforeInit = [() -> Void]()
@@ -100,7 +100,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     }
   }
   
-  private func sendRequest(method: String, args: [Any], completion: (([String : Any]) -> Void)?) {
+  private func sendRequest(method: String, args: [Any], completion: ((Any?) -> Void)?) {
     if !self.webviewInitialized {
       let callback = { self.sendRequest(method: method, args: args, completion: completion) }
       self.requestsBeforeInit.append(callback)
@@ -158,13 +158,17 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     let json = try! JSONSerialization.jsonObject(with: jsonString.data(using: .utf8)!, options: []) as! [String : Any]
     let type = json["type"] as! String
     let requestId = json["id"] as! String
-    let arguments = json["args"] as! [Any]
     
     switch type {
     case "response":
-      let value = json["value"]!
+      let value = json["value"]
       self.handleResponse(id: requestId, value: value)
+    case "errorResponse":
+      TUTSLog("Request failed: \(type) \(requestId)")
+      // We don't "reject" requests right now
+      self.requests.removeValue(forKey: requestId)
     default:
+      let arguments = json["args"] as! [Any]
       self.handleRequest(type: type, requestId: requestId, args: arguments)
     }
   }
@@ -262,7 +266,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
       self.fileUtil.downloadFile(
         fromUrl: args[0] as! String,
         forName: args[1] as! String,
-        withHeaders: args[3] as! [String : String],
+        withHeaders: args[2] as! [String : String],
         completion: sendResponseBlock
       )
     case "open":
@@ -290,7 +294,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
       }
     case "findSuggestions":
       self.contactsSource.searchForContacts(usingQuery: args[0] as! String, completion: sendResponseBlock)
-    case "closePushNotification":
+    case "closePushNotifications":
       UIApplication.shared.applicationIconBadgeNumber = 0
       sendResponseBlock(value: NSNull(), error: nil)
     case "openLink":
@@ -310,11 +314,58 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         }
       }
     case "getDeviceLog":
-      let entries = TUTLogger.sharedInstance().entries()
+      do {
+        let logfilepath = try self.getLogfile()
+        sendResponseBlock(value: logfilepath, error: nil)
+      } catch {
+        sendResponseBlock(value: nil, error: error)
+        return
+      }
+    case "scheduleAlarms":
+      let alarmsJson = args[0] as! [[String : Any]]
+      let alarms = alarmsJson.map { json in
+        TUTAlarmNotification.fromJSON(json)
+      }
+      self.alarmManager.processNewAlarms(alarms) { error in
+        if let error = error {
+          sendResponseBlock(value: nil, error: error)
+        } else {
+          sendResponseBlock(value: NSNull(), error: nil)
+        }
+      }
+    case "getSelectedTheme":
+      sendResponseBlock(value: self.themeManager.selectedThemeId, error: nil)
+    case "setSelectedTheme":
+      let themeId = args[0] as! String
+      self.themeManager.selectedThemeId = themeId
+      self.applyTheme(self.themeManager.currentThemeWithFallback)
+      sendResponseBlock(value: NSNull(), error: nil)
+    case "getThemes":
+      sendResponseBlock(value: self.themeManager.themes, error: nil)
+    case "setThemes":
+      let themes = args[0] as! [Theme]
+      self.themeManager.themes = themes
+      self.applyTheme(self.themeManager.currentThemeWithFallback)
+      sendResponseBlock(value: NSNull(), error: nil)
     default:
-      // TODO
-    TUTSLog("I don't know command \(type) yet")
+      let message = "Unknown comand: \(type)"
+      TUTSLog(message)
+      let error = NSError(domain: "tutanota", code: 5, userInfo: ["message": message])
+      sendResponseBlock(value: nil, error: error)
     }
+  }
+  
+  /// - Returns path to the generated logfile
+  private func getLogfile() throws -> String {
+    let entries = TUTLogger.sharedInstance().entries()
+    let directory = try TUTFileUtil.getDecryptedFolder()
+    let directoryUrl = URL(fileURLWithPath: directory)
+    let fileName = "\(Date().timeIntervalSince1970)_device_tutanota_log"
+    let fileUrl = directoryUrl.appendingPathComponent(fileName, isDirectory: false)
+    let stringContent = entries.joined(separator: "\n")
+    let bytes = stringContent.data(using: .utf8)!
+    try bytes.write(to: fileUrl, options: .atomic)
+    return fileUrl.path
   }
   
   private func sendResponse(requestId: String, value: Any) {
@@ -355,10 +406,10 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     }
   }
   
-  private func handleResponse(id: String, value: Any) {
+  private func handleResponse(id: String, value: Any?) {
     if let request = self.requests[id] {
       self.requests.removeValue(forKey: id)
-      request(value as! [String : Any])
+      request(value)
     }
   }
   
