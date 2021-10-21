@@ -20,7 +20,6 @@
 		3D378EF02536F79A0001F1F3 /* AsyncBlockOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D2DE2C723FC387700FFB95B /* AsyncBlockOperation.m */; };
 		3D378EF12536F79A0001F1F3 /* TUTAlarmNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D57BEC122B79C4D00205B1B /* TUTAlarmNotification.m */; };
 		3D378EF22536F79A0001F1F3 /* FileChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D378EE62536F51F0001F1F3 /* FileChooser.swift */; };
-		3D378EF32536F79A0001F1F3 /* TUTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4A08A20F8C6240086EB36 /* TUTViewController.m */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
 		3D378EF42536F79A0001F1F3 /* TUTSseInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6C6D0322AF9BD100289576 /* TUTSseInfo.m */; };
 		3D378EF52536F79A0001F1F3 /* TUTUserPreferenceFacade.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D3697D622AA8CE9007F0A83 /* TUTUserPreferenceFacade.m */; };
 		3D378EF62536F79A0001F1F3 /* TUTIdTuple.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D57BEBE22B7979D00205B1B /* TUTIdTuple.m */; };
@@ -213,7 +212,6 @@
 		3DCE7AAB27200E0A0085E40D /* WebviewHacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DCE7AA927200E0A0085E40D /* WebviewHacks.h */; };
 		3DCE7AAC27200E0A0085E40D /* WebviewHacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AAA27200E0A0085E40D /* WebviewHacks.m */; };
 		3DCE7AAD27200E0A0085E40D /* WebviewHacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AAA27200E0A0085E40D /* WebviewHacks.m */; };
-		3DD4A08B20F8C6240086EB36 /* TUTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4A08A20F8C6240086EB36 /* TUTViewController.m */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
 		3DD4A09020F8C6260086EB36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A08F20F8C6260086EB36 /* Assets.xcassets */; };
 		3DD4A09320F8C6260086EB36 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A09120F8C6260086EB36 /* LaunchScreen.storyboard */; };
 		3DD7A23522C5FD7500876B85 /* TUTAlarmModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7A23422C5FD7500876B85 /* TUTAlarmModelTest.m */; };
@@ -366,8 +364,6 @@
 		3DCE7AA927200E0A0085E40D /* WebviewHacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebviewHacks.h; sourceTree = "<group>"; };
 		3DCE7AAA27200E0A0085E40D /* WebviewHacks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebviewHacks.m; sourceTree = "<group>"; };
 		3DD4A08320F8C6240086EB36 /* tutanota.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tutanota.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DD4A08920F8C6240086EB36 /* TUTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TUTViewController.h; sourceTree = "<group>"; };
-		3DD4A08A20F8C6240086EB36 /* TUTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTViewController.m; sourceTree = "<group>"; };
 		3DD4A08F20F8C6260086EB36 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3DD4A09220F8C6260086EB36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3DD4A09420F8C6260086EB36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -451,8 +447,6 @@
 				3D74536421089DA300B16F2E /* Utils */,
 				3D74536321089D8100B16F2E /* Files */,
 				3D74536221089D5700B16F2E /* Crypto */,
-				3DD4A08920F8C6240086EB36 /* TUTViewController.h */,
-				3DD4A08A20F8C6240086EB36 /* TUTViewController.m */,
 				3DC299F9267358AF00E1E79F /* ThemeManager.swift */,
 				3D0EB1F826F49E36002E5102 /* AppDelegate.swift */,
 				3DCE7AA6271D63BF0085E40D /* ViewController.swift */,
@@ -1516,7 +1510,6 @@
 				3D378EF12536F79A0001F1F3 /* TUTAlarmNotification.m in Sources */,
 				3D378EF22536F79A0001F1F3 /* FileChooser.swift in Sources */,
 				3D4F1BFC26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
-				3D378EF32536F79A0001F1F3 /* TUTViewController.m in Sources */,
 				3D378EF42536F79A0001F1F3 /* TUTSseInfo.m in Sources */,
 				3DCE7AAD27200E0A0085E40D /* WebviewHacks.m in Sources */,
 				3DCE7AA32719D04B0085E40D /* UserPreferenceFacade.swift in Sources */,
@@ -1558,7 +1551,6 @@
 				3D57BEC222B79C4D00205B1B /* TUTAlarmNotification.m in Sources */,
 				3D378EE72536F51F0001F1F3 /* FileChooser.swift in Sources */,
 				3D4F1BFA26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
-				3DD4A08B20F8C6240086EB36 /* TUTViewController.m in Sources */,
 				3D6C6D0422AF9BD100289576 /* TUTSseInfo.m in Sources */,
 				3DCE7AAC27200E0A0085E40D /* WebviewHacks.m in Sources */,
 				3DCE7AA22719D04B0085E40D /* UserPreferenceFacade.swift in Sources */,
