@@ -24,7 +24,6 @@
 		3D378EF52536F79A0001F1F3 /* TUTUserPreferenceFacade.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D3697D622AA8CE9007F0A83 /* TUTUserPreferenceFacade.m */; };
 		3D378EF62536F79A0001F1F3 /* TUTIdTuple.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D57BEBE22B7979D00205B1B /* TUTIdTuple.m */; };
 		3D378EF82536F79A0001F1F3 /* TUTNotificationSessionKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D57BEBB22B7976200205B1B /* TUTNotificationSessionKey.m */; };
-		3D378EF92536F79A0001F1F3 /* TUTFontIconFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D69F032212D4A5B00D52BF7 /* TUTFontIconFactory.m */; };
 		3D378EFA2536F79A0001F1F3 /* TUTRepeatRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D20B36322B8D61600472D12 /* TUTRepeatRule.m */; };
 		3D378EFB2536F79A0001F1F3 /* rsa_oaep_sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D891EFD2105B12E0031E528 /* rsa_oaep_sha256.c */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
 		3D378EFC2536F79A0001F1F3 /* TUTFileViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D891F042105B12F0031E528 /* TUTFileViewer.m */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
@@ -121,7 +120,6 @@
 		3D63A0E3233D009E00D05259 /* TUTLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D63A0E2233D009E00D05259 /* TUTLog.m */; };
 		3D63A0E5233D0C1400D05259 /* TUTLogTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D63A0E4233D0C1400D05259 /* TUTLogTest.m */; };
 		3D652B5820F8DC1600DF9962 /* build in Resources */ = {isa = PBXBuildFile; fileRef = 3D652B5720F8DC1500DF9962 /* build */; };
-		3D69F033212D4A5B00D52BF7 /* TUTFontIconFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D69F032212D4A5B00D52BF7 /* TUTFontIconFactory.m */; };
 		3D6A0AEA212C1701001CD791 /* CompatibilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6A0AE9212C1701001CD791 /* CompatibilityTest.m */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
 		3D6C6D0422AF9BD100289576 /* TUTSseInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6C6D0322AF9BD100289576 /* TUTSseInfo.m */; };
 		3D74536721089F4800B16F2E /* TUTErrorFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D74536621089F4800B16F2E /* TUTErrorFactory.m */; };
@@ -198,6 +196,8 @@
 		3D9A1F4922031B99002C2455 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3D9A1F0222031B99002C2455 /* InfoPlist.strings */; };
 		3D9A1F4A22031B99002C2455 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D9A1F0522031B99002C2455 /* LaunchScreen.storyboard */; };
 		3D9A1F4B22031B99002C2455 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D9A1F0722031B99002C2455 /* Main.storyboard */; };
+		3D9B1294272167D4002B46A1 /* IconFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9B1293272167D4002B46A1 /* IconFactory.swift */; };
+		3D9B1295272167D4002B46A1 /* IconFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9B1293272167D4002B46A1 /* IconFactory.swift */; };
 		3DA047BF212C1BBE0062C36C /* CompatibilityTestData.json in Resources */ = {isa = PBXBuildFile; fileRef = 3DA047BE212C1BBD0062C36C /* CompatibilityTestData.json */; };
 		3DAA23A9267A208200219051 /* UIColorExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA23A8267A208200219051 /* UIColorExtensionsTest.swift */; };
 		3DB9A20E22BA5C23004EA08F /* TUTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DB9A20D22BA5C23004EA08F /* TUTUtils.m */; };
@@ -264,8 +264,6 @@
 		3D63A0E2233D009E00D05259 /* TUTLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUTLog.m; sourceTree = "<group>"; };
 		3D63A0E4233D0C1400D05259 /* TUTLogTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTLogTest.m; sourceTree = "<group>"; };
 		3D652B5720F8DC1500DF9962 /* build */ = {isa = PBXFileReference; lastKnownFileType = folder; name = build; path = ../../build; sourceTree = "<group>"; };
-		3D69F031212D4A5B00D52BF7 /* TUTFontIconFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TUTFontIconFactory.h; sourceTree = "<group>"; };
-		3D69F032212D4A5B00D52BF7 /* TUTFontIconFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTFontIconFactory.m; sourceTree = "<group>"; };
 		3D6A0AE9212C1701001CD791 /* CompatibilityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompatibilityTest.m; sourceTree = "<group>"; };
 		3D6C6D0222AF9BD100289576 /* TUTSseInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TUTSseInfo.h; sourceTree = "<group>"; };
 		3D6C6D0322AF9BD100289576 /* TUTSseInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTSseInfo.m; sourceTree = "<group>"; };
@@ -352,6 +350,7 @@
 		3D9A1F0322031B99002C2455 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = InfoPlist.strings; sourceTree = "<group>"; };
 		3D9A1F0622031B99002C2455 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3D9A1F0822031B99002C2455 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Main.storyboard; sourceTree = "<group>"; };
+		3D9B1293272167D4002B46A1 /* IconFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconFactory.swift; sourceTree = "<group>"; };
 		3DA047BE212C1BBD0062C36C /* CompatibilityTestData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CompatibilityTestData.json; sourceTree = "<group>"; };
 		3DAA23A5267A202000219051 /* tutanotaTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "tutanotaTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		3DAA23A8267A208200219051 /* UIColorExtensionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensionsTest.swift; sourceTree = "<group>"; };
@@ -494,8 +493,6 @@
 				3D4D3205210747240081813A /* Swiftier.h */,
 				3D891F232105BB210031E528 /* TUTEncodingConverter.h */,
 				3D891F022105B12E0031E528 /* TUTEncodingConverter.m */,
-				3D69F031212D4A5B00D52BF7 /* TUTFontIconFactory.h */,
-				3D69F032212D4A5B00D52BF7 /* TUTFontIconFactory.m */,
 				3D3697D522AA8CE9007F0A83 /* TUTUserPreferenceFacade.h */,
 				3D3697D622AA8CE9007F0A83 /* TUTUserPreferenceFacade.m */,
 				3D6C6D0222AF9BD100289576 /* TUTSseInfo.h */,
@@ -511,6 +508,7 @@
 				3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */,
 				3DCE7AA927200E0A0085E40D /* WebviewHacks.h */,
 				3DCE7AAA27200E0A0085E40D /* WebviewHacks.m */,
+				3D9B1293272167D4002B46A1 /* IconFactory.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1507,6 +1505,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D378EF02536F79A0001F1F3 /* AsyncBlockOperation.m in Sources */,
+				3D9B1295272167D4002B46A1 /* IconFactory.swift in Sources */,
 				3D378EF12536F79A0001F1F3 /* TUTAlarmNotification.m in Sources */,
 				3D378EF22536F79A0001F1F3 /* FileChooser.swift in Sources */,
 				3D4F1BFC26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
@@ -1517,7 +1516,6 @@
 				3D378EF62536F79A0001F1F3 /* TUTIdTuple.m in Sources */,
 				3D0EB1F726F489AD002E5102 /* KeychainManager.swift in Sources */,
 				3D378EF82536F79A0001F1F3 /* TUTNotificationSessionKey.m in Sources */,
-				3D378EF92536F79A0001F1F3 /* TUTFontIconFactory.m in Sources */,
 				3D378EFA2536F79A0001F1F3 /* TUTRepeatRule.m in Sources */,
 				3D378EFB2536F79A0001F1F3 /* rsa_oaep_sha256.c in Sources */,
 				3D378EFC2536F79A0001F1F3 /* TUTFileViewer.m in Sources */,
@@ -1548,6 +1546,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D2DE2C823FC387700FFB95B /* AsyncBlockOperation.m in Sources */,
+				3D9B1294272167D4002B46A1 /* IconFactory.swift in Sources */,
 				3D57BEC222B79C4D00205B1B /* TUTAlarmNotification.m in Sources */,
 				3D378EE72536F51F0001F1F3 /* FileChooser.swift in Sources */,
 				3D4F1BFA26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
@@ -1558,7 +1557,6 @@
 				3D57BEBF22B7979D00205B1B /* TUTIdTuple.m in Sources */,
 				3D0EB1F626F489AD002E5102 /* KeychainManager.swift in Sources */,
 				3D57BEBC22B7976200205B1B /* TUTNotificationSessionKey.m in Sources */,
-				3D69F033212D4A5B00D52BF7 /* TUTFontIconFactory.m in Sources */,
 				3D20B36422B8D61600472D12 /* TUTRepeatRule.m in Sources */,
 				3D891F082105B12F0031E528 /* rsa_oaep_sha256.c in Sources */,
 				3D891F0F2105B12F0031E528 /* TUTFileViewer.m in Sources */,

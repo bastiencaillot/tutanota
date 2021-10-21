@@ -3,7 +3,6 @@
 //
 
 #import "Utils/TUTUtils.h"
-#import "Utils/TUTFontIconFactory.h"
 #import "Utils/TUTIcons.h"
 #import "Utils/TUTErrorFactory.h"
 #import "Utils/TUTLog.h"

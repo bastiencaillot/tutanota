@@ -28,10 +28,10 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
     self.supportedUTIs = ["public.content", "public.archive", "public.data"]
     self.sourceController = viewController
     self.imagePickerController = UIImagePickerController()
-    self.cameraImage = TUTFontIconFactory.createFontImage(
-      forIconId: TUT_ICON_CAMERA, fontName: "ionicons", size: 34)
-    self.photoLibImage = TUTFontIconFactory.createFontImage(
-      forIconId: TUT_ICON_FILES, fontName: "ionicons", size: 34)
+    self.cameraImage = IconFactory.createFontImage(
+      iconId: TUT_ICON_CAMERA, fontName: "ionicons", fontSize: 34)
+    self.photoLibImage = IconFactory.createFontImage(
+      iconId: TUT_ICON_FILES, fontName: "ionicons", fontSize: 34)
     super.init()
     self.imagePickerController.delegate = self
   }
