@@ -48,13 +48,13 @@ class FileFacade {
     DispatchQueue.global(qos: .default).async {
       let fileName = (path as NSString).lastPathComponent
       if FileUtils.fileExists(atPath: path) {
-        completion(fileName, nil)
+        completion(.success(fileName))
       } else {
         let error = TUTErrorFactory.createError(
           withDomain: FILES_ERROR_DOMAIN,
           message: "File does not exists"
         )
-        completion(nil, error)
+        completion(.failure(error))
       }
     }
   }
@@ -62,7 +62,7 @@ class FileFacade {
   func getMimeType(path: String, completion: @escaping ResponseCallback<String>) {
     DispatchQueue.global(qos: .default).async {
       let mimeType = self.getFileMIMEType(path: path) ?? "application/octet-stream"
-      completion(mimeType, nil)
+      completion(.success(mimeType))
     }
   }
   
@@ -70,9 +70,9 @@ class FileFacade {
     DispatchQueue.global(qos: .default).async {
       do {
         let attrs = try FileManager.default.attributesOfItem(atPath: path)
-        completion((attrs[.size] as! UInt64), nil)
+        completion(.success((attrs[.size] as! UInt64)))
       } catch {
-        completion(nil, error)
+        completion(.failure(error))
       }
     }
   }
@@ -95,12 +95,12 @@ class FileFacade {
       let fileUrl = FileUtils.urlFromPath(path: path)
       let task = session.uploadTask(with: request, fromFile: fileUrl) { data, response, error in
         if let error = error {
-          completion(nil, error)
+          completion(.failure(error))
           return
         }
         let httpResponse = response as! HTTPURLResponse
         let apiResponse = DataTaskResponse(httpResponse: httpResponse, encryptedFileUri: nil)
-        completion(apiResponse, nil)
+        completion(.success(apiResponse))
       }
       task.resume()
     }
@@ -121,7 +121,7 @@ class FileFacade {
       let session = URLSession(configuration: .ephemeral)
       let task = session.dataTask(with: request) { data, response, error in
         if let error = error {
-          completion(nil, error)
+          completion(.failure(error))
           return
         }
         let httpResponse = response as! HTTPURLResponse
@@ -130,14 +130,14 @@ class FileFacade {
           do {
             encryptedFileUri = try self.writeEncryptedFile(fileName: fileName, data: data!)
           } catch {
-            completion(nil, error)
+            completion(.failure(error))
             return
           }
         } else {
           encryptedFileUri = nil
         }
         let responseDict = DataTaskResponse(httpResponse: httpResponse, encryptedFileUri: encryptedFileUri)
-        completion(responseDict, nil)
+        completion(.success(responseDict))
       }
       task.resume()
     }

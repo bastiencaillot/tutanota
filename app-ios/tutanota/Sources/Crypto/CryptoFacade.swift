@@ -100,12 +100,8 @@ class CryptoFacade {
   
   private func run<T>(_ completion: @escaping ResponseCallback<T>, call: @escaping () throws -> T) {
     self.queue.async {
-      do {
-        let result = try call()
-        completion(result, nil)
-      } catch {
-        completion(nil, error)
-      }
+      let result = Result(catching: call)
+      completion(result)
     }
   }
 }

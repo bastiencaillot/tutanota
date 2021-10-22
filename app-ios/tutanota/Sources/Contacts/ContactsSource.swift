@@ -24,27 +24,27 @@ class ContactsSource {
     case .authorized:
       self.doSearch(query: query, completion: completion)
     case .denied, .restricted:
-      completion([], nil)
+      completion(.success([]))
     case .notDetermined:
       CNContactStore().requestAccess(for: .contacts) { granted, error in
         if granted {
           self.doSearch(query: query, completion: completion)
         } else {
-          completion([], nil)
+          completion(.success([]))
         }
       }
     @unknown default:
       TUTSLog("Unknown auth status: \(status)")
-      completion([], nil)
+      completion(.success([]))
     }
   }
   
   private func doSearch(query: String, completion: @escaping ResponseCallback<[ContactResult]>) {
     do {
       let contacts = try self.queryContacts(query: query, upTo: 10)
-      completion(contacts, nil)
+      completion(.success(contacts))
     } catch {
-      completion(nil, error)
+      completion(.failure(error))
     }
   }
   

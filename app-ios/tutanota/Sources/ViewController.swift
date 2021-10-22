@@ -187,23 +187,24 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
   }
   
   private func handleRequest(type: String, requestId: String, args: [Any]) {
-    func sendResponseBlock(value: Any?, error: Error?) {
-      if let error = error {
+    func sendResponseBlock<T: Any>(_ result: Result<T, Error>) {
+      switch result {
+      case let .success(value):
+        sendResponse(requestId: requestId, value: value)
+      case let .failure(error):
         self.sendErrorResponse(requestId: requestId, err: error)
-      } else {
-        sendResponse(requestId: requestId, value: value!)
       }
     }
     
-    func sendEncodableResponseBlock<T: Encodable>(value: T?, error: Error?) {
-      let json = value.map { v in encodableToNSOjbect(value: v) }
-      sendResponseBlock(value: json, error: error)
+    func sendEncodableResponseBlock<T: Encodable>(_ result: Result<T, Error>) {
+      let json = result.map { v in encodableToNSOjbect(value: v) }
+      sendResponseBlock(json)
     }
     
     switch type {
     case "init":
       self.webviewInitialized = true
-      sendResponseBlock(value: "ios", error: nil)
+      sendResponseBlock(.success("ios"))
       for callback in requestsBeforeInit {
         callback()
       }
@@ -244,7 +245,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     case "getName":
       self.fileFacade.getName(path: args[0] as! String, completion: sendResponseBlock)
     case "changeLanguage":
-      sendResponseBlock(value: NSNull(), error: nil)
+      sendResponseBlock(.success(NSNull()))
     case "getSize":
       self.fileFacade.getSize(path: args[0] as! String, completion: sendResponseBlock)
     case "getMimeType":
@@ -262,15 +263,11 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
       )
     case "deleteFile":
       self.fileFacade.deleteFile(path: args[0] as! String) { _ in
-        sendResponseBlock(value: NSNull(), error: nil)
+        sendResponseBlock(.success(NSNull()))
       }
     case "clearFileData":
       self.fileFacade.clearFileData { error in
-        if let error = error {
-          sendResponseBlock(value: nil, error: error)
-        } else {
-          sendResponseBlock(value: NSNull(), error: nil)
-        }
+        sendResponseBlock(nullResult(error: error))
       }
     case "download":
       self.fileFacade.downloadFile(
@@ -305,61 +302,49 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
       )
     case "closePushNotifications":
       UIApplication.shared.applicationIconBadgeNumber = 0
-      sendResponseBlock(value: NSNull(), error: nil)
+      sendResponseBlock(.success(NSNull()))
     case "openLink":
       UIApplication.shared.open(
         URL(string: args[0] as! String)!,
         options: [:]) { success in
-        sendResponseBlock(value: success, error: nil)
+          sendResponseBlock(.success(success))
       }
     case "saveBlob":
       let fileDataB64 = args[1] as! String
       let fileData = Data(base64Encoded: fileDataB64)!
       self.fileFacade.openFile(name: args[0] as! String, data: fileData) { err in
-        if let error = err {
-          self.sendErrorResponse(requestId: requestId, err: error)
-        } else {
-          self.sendResponse(requestId: requestId, value: NSNull())
-        }
+        sendResponseBlock(nullResult(error: err))
       }
     case "getDeviceLog":
-      do {
-        let logfilepath = try self.getLogfile()
-        sendResponseBlock(value: logfilepath, error: nil)
-      } catch {
-        sendResponseBlock(value: nil, error: error)
-        return
-      }
+      let result = Result { try self.getLogfile() }
+      sendResponseBlock(result)
     case "scheduleAlarms":
       let alarmsJson = args[0] as! [[String : Any]]
       let alarmsData = try! JSONSerialization.data(withJSONObject: alarmsJson, options: [])
       let alarms = try! JSONDecoder().decode(Array<EncryptedAlarmNotification>.self, from: alarmsData)
       self.alarmManager.processNewAlarms(alarms) { error in
-        if let error = error {
-          sendResponseBlock(value: nil, error: error)
-        } else {
-          sendResponseBlock(value: NSNull(), error: nil)
-        }
+        sendResponseBlock(nullResult(error: error))
       }
     case "getSelectedTheme":
-      sendResponseBlock(value: self.themeManager.selectedThemeId, error: nil)
+      sendResponseBlock(.success(self.themeManager.selectedThemeId))
     case "setSelectedTheme":
       let themeId = args[0] as! String
       self.themeManager.selectedThemeId = themeId
       self.applyTheme(self.themeManager.currentThemeWithFallback)
-      sendResponseBlock(value: NSNull(), error: nil)
+      sendResponseBlock(.success(NSNull()))
     case "getThemes":
-      sendResponseBlock(value: self.themeManager.themes, error: nil)
+      sendResponseBlock(.success(self.themeManager.themes))
     case "setThemes":
       let themes = args[0] as! [Theme]
       self.themeManager.themes = themes
       self.applyTheme(self.themeManager.currentThemeWithFallback)
-      sendResponseBlock(value: NSNull(), error: nil)
+      sendResponseBlock(.success(NSNull()))
     default:
       let message = "Unknown comand: \(type)"
       TUTSLog(message)
       let error = NSError(domain: "tutanota", code: 5, userInfo: ["message": message])
-      sendResponseBlock(value: nil, error: error)
+      
+      sendResponseBlock(nullResult(error: error))
     }
   }
   
@@ -489,5 +474,13 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     get {
       UIApplication.shared.delegate as! AppDelegate
     }
+  }
+}
+
+fileprivate func nullResult(error: Error?) -> Result<NSNull, Error> {
+  if let error = error {
+    return .failure(error)
+  } else {
+    return .success(NSNull())
   }
 }

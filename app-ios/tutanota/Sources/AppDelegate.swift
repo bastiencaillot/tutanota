@@ -6,14 +6,13 @@ class AppDelegate : UIResponder,
                     UNUserNotificationCenterDelegate {
   var window: UIWindow?
   
-  private var pushTokenCallback: ((String?, Error?) -> Void)?
+  private var pushTokenCallback: ResponseCallback<String>?
   private let userPreferences = UserPreferenceFacade()
   private var alarmManager: AlarmManager!
   private var viewController: ViewController!
   
-  @objc
   func registerForPushNotifications(
-    callback: @escaping (String?, Error?) -> Void
+    callback: @escaping ResponseCallback<String>
   ) {
     UNUserNotificationCenter.current()
       .requestAuthorization(
@@ -24,7 +23,7 @@ class AppDelegate : UIResponder,
             UIApplication.shared.registerForRemoteNotifications()
           }
         } else {
-          callback(nil, error)
+          callback(.failure(error!))
         }
       }
   }
@@ -65,13 +64,13 @@ class AppDelegate : UIResponder,
   func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     if let callback = self.pushTokenCallback {
       let stringToken = deviceTokenAsString(deviceToken: deviceToken)
-      callback(stringToken, nil)
+      callback(.success(stringToken!))
       self.pushTokenCallback = nil
     }
   }
   
   func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-    self.pushTokenCallback?(nil, error)
+    self.pushTokenCallback?(.failure(error))
     self.pushTokenCallback = nil
   }
   

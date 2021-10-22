@@ -11,7 +11,6 @@ import PhotosUI
 import UIKit
 
 /// Utility class which shows pickers for files.
-@objc
 class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate,
   UIDocumentMenuDelegate, UIPopoverPresentationControllerDelegate, UIDocumentPickerDelegate
 {
@@ -21,7 +20,7 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
   private var attachmentTypeMenu: UIDocumentMenuViewController?
   private var imagePickerController: UIImagePickerController
   private var supportedUTIs: [String]
-  private var resultHandler: (([String]?, Error?) -> Void)?
+  private var resultHandler: ResponseCallback<[String]>?
   private var popOverPresentationController: UIPopoverPresentationController?
 
   @objc init(viewController: UIViewController) {
@@ -36,14 +35,14 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
     self.imagePickerController.delegate = self
   }
 
-  @objc public func open(
+  public func open(
     withAnchorRect anchorRect: CGRect,
-    completion completionHandler: @escaping ([String]?, Error?) -> Void
+    completion completionHandler: @escaping ResponseCallback<[String]>
   ) {
     if let previousHandler = self.resultHandler {
         TUTSLog("Another file picker is already open?")
         self.sourceController.dismiss(animated: true, completion: nil)
-        previousHandler([], nil)
+      previousHandler(.success([]))
     }
     self.resultHandler = completionHandler
 
@@ -334,12 +333,12 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
   }
 
   func sendMultipleResults(filePaths: [String]) {
-    self.resultHandler?(filePaths, nil)
+    self.resultHandler?(.success(filePaths))
     self.resultHandler = nil
   }
 
   func sendError(error: Error) {
-    self.resultHandler?(nil, error)
+    self.resultHandler?(.failure(error))
     self.resultHandler = nil
   }
 
