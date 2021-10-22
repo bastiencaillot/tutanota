@@ -12,8 +12,7 @@ import UserNotifications
 
 class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHandler, UIScrollViewDelegate {
   private let crypto: TUTCrypto
-  private var fileChooser: TUTFileChooser!
-  private var fileUtil: TUTFileUtil!
+  private var fileFacade: FileFacade!
   private let contactsSource: ContactsSource
   private let themeManager: ThemeManager
   private let keychainManager: KeychainManager
@@ -37,19 +36,20 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     userPreferences: UserPreferenceFacade,
     alarmManager: AlarmManager
     ) {
-    self.crypto = crypto
-    self.contactsSource = contactsSource
-    self.themeManager = themeManager
-    self.keychainManager = keychainManager
-    self.userPreferences = userPreferences
-    self.alarmManager = alarmManager
-    self.fileChooser = nil
-    self.fileUtil = nil
-    
+      self.crypto = crypto
+      self.contactsSource = contactsSource
+      self.themeManager = themeManager
+      self.keychainManager = keychainManager
+      self.userPreferences = userPreferences
+      self.alarmManager = alarmManager
+      self.fileFacade = nil
+      
     super.init(nibName: nil, bundle: nil)
     
-    self.fileChooser = TUTFileChooser(viewController: self)
-    self.fileUtil = TUTFileUtil(viewController: self)
+    self.fileFacade = FileFacade(
+        chooser: TUTFileChooser(viewController: self),
+        viewer: TUTFileViewer(viewController: self)
+    )
   }
   
   required init?(coder: NSCoder) {
@@ -195,6 +195,11 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
       }
     }
     
+    func sendEncodableResponseBlock<T: Encodable>(value: T?, error: Error?) {
+      let json = value.map { v in self.encodeToDict(value: v) }
+      sendResponseBlock(value: json, error: error)
+    }
+    
     switch type {
     case "init":
       self.webviewInitialized = true
@@ -235,42 +240,47 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         width: rectDict["width"]!,
         height: rectDict["height"]!
       )
-      self.fileChooser.open(withAnchorRect: rect, completion: sendResponseBlock)
+      self.fileFacade.openFileChooser(anchor: rect, completion: sendResponseBlock)
     case "getName":
-      self.fileUtil.getNameForPath(args[0] as! String, completion: sendResponseBlock)
+      self.fileFacade.getName(path: args[0] as! String, completion: sendResponseBlock)
     case "changeLanguage":
       sendResponseBlock(value: NSNull(), error: nil)
     case "getSize":
-      self.fileUtil.getSizeForPath(args[0] as! String, completion: sendResponseBlock)
+      self.fileFacade.getSize(path: args[0] as! String, completion: sendResponseBlock)
     case "getMimeType":
-      self.fileUtil.getMimeType(forPath: args[0] as! String, completion: sendResponseBlock)
+      self.fileFacade.getMimeType(path: args[0] as! String, completion: sendResponseBlock)
     case "aesEncryptFile":
       self.crypto.aesEncryptFile(withKey: args[0] as! String, atPath: args[1] as! String, completion: sendResponseBlock)
     case "aesDecryptFile":
       self.crypto.aesDecryptFile(withKey: args[0] as! String, atPath: args[1] as! String, completion: sendResponseBlock)
     case "upload":
-      self.fileUtil.uploadFile(
+      self.fileFacade.uploadFile(
         atPath: args[0] as! String,
         toUrl: args[1] as! String,
         withHeaders: args[2] as! [String : String],
-        completion: sendResponseBlock
+        completion: sendEncodableResponseBlock
       )
     case "deleteFile":
-      self.fileUtil.deleteFile(atPath: args[0] as! String) {
+      self.fileFacade.deleteFile(path: args[0] as! String) { _ in
         sendResponseBlock(value: NSNull(), error: nil)
       }
     case "clearFileData":
-      self.fileUtil.clearFileData()
-      sendResponseBlock(value: NSNull(), error: nil)
+      self.fileFacade.clearFileData { error in
+        if let error = error {
+          sendResponseBlock(value: nil, error: error)
+        } else {
+          sendResponseBlock(value: NSNull(), error: nil)
+        }
+      }
     case "download":
-      self.fileUtil.downloadFile(
+      self.fileFacade.downloadFile(
         fromUrl: args[0] as! String,
         forName: args[1] as! String,
         withHeaders: args[2] as! [String : String],
-        completion: sendResponseBlock
+        completion: sendEncodableResponseBlock
       )
     case "open":
-      self.fileUtil.openFile(atPath: args[0] as! String) { error in
+      self.fileFacade.openFile(path: args[0] as! String) { error in
         if let error = error {
           self.sendErrorResponse(requestId: requestId, err: error)
         } else {
@@ -293,14 +303,10 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         self.sendErrorResponse(requestId: requestId, err: error)
       }
     case "findSuggestions":
-      self.contactsSource.search(query: args[0] as! String) { contacts, err in
-        if let err = err {
-          sendResponseBlock(value: nil, error: err)
-        } else {
-          let json = contacts!.map { c in self.encodeToDict(value: c) }
-          sendResponseBlock(value: json, error: nil)
-        }
-      }
+      self.contactsSource.search(
+        query: args[0] as! String,
+        completion: sendEncodableResponseBlock
+      )
     case "closePushNotifications":
       UIApplication.shared.applicationIconBadgeNumber = 0
       sendResponseBlock(value: NSNull(), error: nil)
@@ -313,7 +319,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     case "saveBlob":
       let fileDataB64 = args[1] as! String
       let fileData = Data(base64Encoded: fileDataB64)!
-      self.fileUtil.openFile(args[0] as! String, fileData: fileData) { err in
+      self.fileFacade.openFile(name: args[0] as! String, data: fileData) { err in
         if let error = err {
           self.sendErrorResponse(requestId: requestId, err: error)
         } else {

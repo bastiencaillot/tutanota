@@ -106,6 +106,10 @@
 		3D6A0AEA212C1701001CD791 /* CompatibilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6A0AE9212C1701001CD791 /* CompatibilityTest.m */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
 		3D6C6D0422AF9BD100289576 /* TUTSseInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6C6D0322AF9BD100289576 /* TUTSseInfo.m */; };
 		3D84F56B2721B92C00858A58 /* MissedNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56A2721B92C00858A58 /* MissedNotification.swift */; };
+		3D84F56D2722CEF900858A58 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56C2722CEF900858A58 /* FileUtils.swift */; };
+		3D84F56E2722CEF900858A58 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56C2722CEF900858A58 /* FileUtils.swift */; };
+		3D84F5702722E4B700858A58 /* FileFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56F2722E4B700858A58 /* FileFacade.swift */; };
+		3D84F5712722E4B700858A58 /* FileFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56F2722E4B700858A58 /* FileFacade.swift */; };
 		3D87ECDF212D921700FD7315 /* ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D87ECDE212D921600FD7315 /* ionicons.ttf */; };
 		3D87ECE6212D9EB000FD7315 /* TUTIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D87ECE5212D9EB000FD7315 /* TUTIcons.m */; };
 		3D891F082105B12F0031E528 /* rsa_oaep_sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D891EFD2105B12E0031E528 /* rsa_oaep_sha256.c */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
@@ -256,6 +260,8 @@
 		3D6C6D0222AF9BD100289576 /* TUTSseInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TUTSseInfo.h; sourceTree = "<group>"; };
 		3D6C6D0322AF9BD100289576 /* TUTSseInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTSseInfo.m; sourceTree = "<group>"; };
 		3D84F56A2721B92C00858A58 /* MissedNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissedNotification.swift; sourceTree = "<group>"; };
+		3D84F56C2722CEF900858A58 /* FileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtils.swift; sourceTree = "<group>"; };
+		3D84F56F2722E4B700858A58 /* FileFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileFacade.swift; sourceTree = "<group>"; };
 		3D87ECDE212D921600FD7315 /* ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ionicons.ttf; sourceTree = "<group>"; };
 		3D87ECE4212D9EAF00FD7315 /* TUTIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUTIcons.h; sourceTree = "<group>"; };
 		3D87ECE5212D9EB000FD7315 /* TUTIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUTIcons.m; sourceTree = "<group>"; };
@@ -466,6 +472,7 @@
 				3D378EE62536F51F0001F1F3 /* FileChooser.swift */,
 				3D4F1BF826EBADE500E87BF5 /* TUTBigNum.h */,
 				3D4F1BF926EBADE500E87BF5 /* TUTBigNum.m */,
+				3D84F56C2722CEF900858A58 /* FileUtils.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -496,6 +503,7 @@
 				3DCE7AAA27200E0A0085E40D /* WebviewHacks.m */,
 				3D9B1293272167D4002B46A1 /* IconFactory.swift */,
 				3D9B129927216DE0002B46A1 /* Response.swift */,
+				3D84F56F2722E4B700858A58 /* FileFacade.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1494,6 +1502,7 @@
 				3D378EF02536F79A0001F1F3 /* AsyncBlockOperation.m in Sources */,
 				3D9B1295272167D4002B46A1 /* IconFactory.swift in Sources */,
 				3D378EF22536F79A0001F1F3 /* FileChooser.swift in Sources */,
+				3D84F5712722E4B700858A58 /* FileFacade.swift in Sources */,
 				3D9B12A127218AF9002B46A1 /* RepeatRule.swift in Sources */,
 				3D4F1BFC26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
 				3D9B12B52721A1E2002B46A1 /* TUTErrorFactory.m in Sources */,
@@ -1510,6 +1519,7 @@
 				3D9B12A42721926E002B46A1 /* ValueEncryption.swift in Sources */,
 				3D378F022536F79A0001F1F3 /* TUTEncodingConverter.m in Sources */,
 				3D0EB1FD26F4BEE4002E5102 /* AlarmManager.swift in Sources */,
+				3D84F56E2722CEF900858A58 /* FileUtils.swift in Sources */,
 				3DC299FE2673668000E1E79F /* QueryUtils.swift in Sources */,
 				3D378F032536F79A0001F1F3 /* TUTAes128Facade.m in Sources */,
 				3DC299FB267358AF00E1E79F /* ThemeManager.swift in Sources */,
@@ -1558,7 +1568,9 @@
 				3D9B129727216D60002B46A1 /* ContactsSource.swift in Sources */,
 				3D891F092105B12F0031E528 /* TUTFileUtil.m in Sources */,
 				3D9B12A927219538002B46A1 /* AlarmInfo.swift in Sources */,
+				3D84F5702722E4B700858A58 /* FileFacade.swift in Sources */,
 				3DE7B3442135855F003415BE /* TUTSubKeys.m in Sources */,
+				3D84F56D2722CEF900858A58 /* FileUtils.swift in Sources */,
 				3DCE7AA7271D63BF0085E40D /* ViewController.swift in Sources */,
 				3D891F0B2105B12F0031E528 /* TUTCrypto.m in Sources */,
 				3D63A0E3233D009E00D05259 /* TUTLog.m in Sources */,
