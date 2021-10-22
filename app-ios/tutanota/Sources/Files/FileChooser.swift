@@ -185,7 +185,7 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
     // we have to copy the file into a folder of this app.
     let targetFolder: String
     do {
-      targetFolder = try TUTFileUtil.getDecryptedFolder()
+      targetFolder = try FileUtils.getDecryptedFolder()
     } catch {
       self.sendError(error: error)
       return
@@ -307,7 +307,7 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
 
   private func copyToLocalFolder(srcUrl: URL, filename: String) throws -> URL {
     let targetFolder: String
-    targetFolder = try TUTFileUtil.getDecryptedFolder()
+    targetFolder = try FileUtils.getDecryptedFolder()
     let targetUrl = URL(fileURLWithPath: targetFolder).appendingPathComponent(filename)
     let fileManager = FileManager.default
     // NSFileManager copyItemAtUrl returns an error if the file alredy exists. so delete it first.

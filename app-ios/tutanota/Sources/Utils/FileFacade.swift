@@ -3,9 +3,9 @@ import MobileCoreServices
 
 class FileFacade {
   private let chooser: TUTFileChooser
-  private let viewer: TUTFileViewer
+  private let viewer: FileViewer
   
-  init(chooser: TUTFileChooser, viewer: TUTFileViewer) {
+  init(chooser: TUTFileChooser, viewer: FileViewer) {
     self.chooser = chooser
     self.viewer = viewer
   }
@@ -14,8 +14,8 @@ class FileFacade {
     self.chooser.open(withAnchorRect: anchor, completion: completion)
   }
   
-  func openFile(path: String, completion: @escaping (Error?) -> Void) {
-    self.viewer.openFile(atPath: path, completion: completion)
+  func openFile(path: String, completion: @escaping () -> Void) {
+    self.viewer.openFile(path: path, completion: completion)
   }
   
   func openFile(name: String, data: Data, completion: @escaping  (Error?) -> Void) {
@@ -24,11 +24,11 @@ class FileFacade {
       let filePath = (decryptedFolder as NSString).appendingPathComponent(name)
       let fileURL = FileUtils.urlFromPath(path: filePath)
       try data.write(to: fileURL, options: .atomic)
-      self.openFile(path: filePath) { err in
+      self.openFile(path: filePath) {
         let deleteError = doCatch {
           try FileManager.default.removeItem(atPath: filePath)
         }
-        completion(err ?? deleteError)
+        completion(deleteError)
       }
     } catch {
       completion(error)

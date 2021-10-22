@@ -48,7 +48,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     
     self.fileFacade = FileFacade(
         chooser: TUTFileChooser(viewController: self),
-        viewer: TUTFileViewer(viewController: self)
+        viewer: FileViewer(viewController: self)
     )
   }
   
@@ -280,12 +280,8 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         completion: sendEncodableResponseBlock
       )
     case "open":
-      self.fileFacade.openFile(path: args[0] as! String) { error in
-        if let error = error {
-          self.sendErrorResponse(requestId: requestId, err: error)
-        } else {
-          self.sendResponse(requestId: requestId, value: NSNull())
-        }
+      self.fileFacade.openFile(path: args[0] as! String) {
+        self.sendResponse(requestId: requestId, value: NSNull())
       }
     case "getPushIdentifier":
       self.appDelegate.registerForPushNotifications(callback: sendResponseBlock)
@@ -370,7 +366,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
   /// - Returns path to the generated logfile
   private func getLogfile() throws -> String {
     let entries = TUTLogger.sharedInstance().entries()
-    let directory = try TUTFileUtil.getDecryptedFolder()
+    let directory = try FileUtils.getDecryptedFolder()
     let directoryUrl = URL(fileURLWithPath: directory)
     let fileName = "\(Date().timeIntervalSince1970)_device_tutanota_log"
     let fileUrl = directoryUrl.appendingPathComponent(fileName, isDirectory: false)
