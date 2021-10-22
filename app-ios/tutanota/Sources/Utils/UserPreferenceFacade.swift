@@ -14,15 +14,15 @@ fileprivate let LAST_PROCESSED_NOTIFICAION_ID_KEY = "lastProcessedNotificationId
 fileprivate let LAST_MISSED_NOTIFICATION_CHECK_TIME = "lastMissedNotificationCheckTime"
 
 class UserPreferenceFacade {
-  var sseInfo: TUTSseInfo? {
+  var sseInfo: SSEInfo? {
     get {
-      let dict = UserDefaults.standard.dictionary(forKey: SSE_INFO_KEY)
-      return dict.map { TUTSseInfo(dict: $0) }
+      let dict = UserDefaults.standard.object(forKey: SSE_INFO_KEY)
+      return dict.map { nsobjectToEncodable(value: $0 as! NSObject) }
     }
   }
   
   func store(pushIdentifier: String, userId: String, sseOrigin: String) {
-    if let sseInfo = self.sseInfo {
+    if var sseInfo = self.sseInfo {
         sseInfo.pushIdentifier = pushIdentifier
         sseInfo.sseOrigin = sseOrigin
         var userIds = sseInfo.userIds
@@ -32,10 +32,11 @@ class UserPreferenceFacade {
         sseInfo.userIds = userIds
       self.put(sseInfo: sseInfo)
     } else {
-      let sseInfo = TUTSseInfo()
-      sseInfo.pushIdentifier = pushIdentifier
-      sseInfo.userIds = [userId]
-      sseInfo.sseOrigin = sseOrigin
+      let sseInfo = SSEInfo(
+        pushIdentifier: pushIdentifier,
+        sseOrigin: sseOrigin,
+        userIds: [userId]
+      )
       self.put(sseInfo: sseInfo)
     }
   }
@@ -58,7 +59,7 @@ class UserPreferenceFacade {
   }
     
   func removeUser(_ userId: String) {
-    guard let sseInfo = self.sseInfo else {
+    guard var sseInfo = self.sseInfo else {
       TUTSLog("Removing userId but there's no SSEInfo stored")
       return
     }
@@ -91,7 +92,7 @@ class UserPreferenceFacade {
   func clear() {
     TUTSLog("UserPreference clear")
     let sseInfo = self.sseInfo
-    if let sseInfo = sseInfo {
+    if var sseInfo = sseInfo {
       sseInfo.userIds = []
       self.put(sseInfo: sseInfo)
       self.lastMissedNotificationCheckTime = nil
@@ -99,7 +100,8 @@ class UserPreferenceFacade {
     }
   }
   
-  private func put(sseInfo: TUTSseInfo) {
-    UserDefaults.standard.setValue(sseInfo.toDict(), forKey: SSE_INFO_KEY)
+  private func put(sseInfo: SSEInfo) {
+    let dict = encodableToNSOjbect(value: sseInfo)
+    UserDefaults.standard.setValue(dict, forKey: SSE_INFO_KEY)
   }
 }

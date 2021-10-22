@@ -62,7 +62,7 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
         popOverPresentationController?.sourceView = sourceController.view
         popOverPresentationController?.sourceRect = anchorRect
       }
-      let photosLabel = TUTUtils.translate("TutaoChoosePhotosAction", default: "Photos")
+      let photosLabel = translate("TutaoChoosePhotosAction", default: "Photos")
       attachmentTypeMenu.addOption(
         withTitle: photosLabel, image: self.photoLibImage, order: .first,
         handler: { [weak self] in
@@ -96,7 +96,7 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
     // add menu item for opening the camera and take a photo or video.
     // according to developer documentation check if the source type is available first https://developer.apple.com/reference/uikit/uiimagepickercontroller
     if UIImagePickerController.isSourceTypeAvailable(.camera) {
-      let cameraLabel = TUTUtils.translate("TutaoShowCameraAction", default: "Camera")
+      let cameraLabel = translate("TutaoShowCameraAction", default: "Camera")
       attachmentTypeMenu.addOption(
         withTitle: cameraLabel, image: self.cameraImage, order: .first
       ) { [weak self] in

@@ -369,7 +369,7 @@ class AlarmManager {
       repeats: false
     )
     let content = UNMutableNotificationContent()
-    content.title = TUTUtils.translate("TutaoCalendarAlarmTitle", default: "Reminder")
+    content.title = translate("TutaoCalendarAlarmTitle", default: "Reminder")
     content.body = notificationText
     content.sound = UNNotificationSound.default
     
@@ -398,10 +398,6 @@ func stringToCustomId(customId: String) -> String {
     .replacingOccurrences(of: "+", with: "-")
     .replacingOccurrences(of: "/", with: "_")
     .replacingOccurrences(of: "=", with: "")
-}
-
-func addSystemModelHeaders(to target: inout [String: String]) {
-  target["v"] = String(SYS_MODEL_VERSION)
 }
 
 /**

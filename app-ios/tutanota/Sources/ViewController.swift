@@ -196,7 +196,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     }
     
     func sendEncodableResponseBlock<T: Encodable>(value: T?, error: Error?) {
-      let json = value.map { v in self.encodeToDict(value: v) }
+      let json = value.map { v in encodableToNSOjbect(value: v) }
       sendResponseBlock(value: json, error: error)
     }
     
@@ -489,11 +489,5 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     get {
       UIApplication.shared.delegate as! AppDelegate
     }
-  }
-  
-  private func encodeToDict<T: Encodable>(value: T) -> Any {
-    // This is not very efficient but hopefully we only need it temporarily
-    let data = try! JSONEncoder().encode(value)
-    return try! JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed])
   }
 }
