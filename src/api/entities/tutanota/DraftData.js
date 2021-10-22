@@ -28,7 +28,7 @@ export const _TypeModel: TypeModel = {
 		"bodyText": {
 			"id": 499,
 			"type": "String",
-			"cardinality": "One",
+			"cardinality": "ZeroOrOne",
 			"final": true,
 			"encrypted": true
 		},
@@ -136,7 +136,7 @@ export type DraftData = {
 	_type: TypeRef<DraftData>;
 
 	_id: Id;
-	bodyText: string;
+	bodyText: ?string;
 	compressedBodyText: ?string;
 	confidential: boolean;
 	method: NumberString;

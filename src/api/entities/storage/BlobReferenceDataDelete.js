@@ -12,27 +12,34 @@ export const _TypeModel: TypeModel = {
 	"name": "BlobReferenceDataDelete",
 	"since": 1,
 	"type": "DATA_TRANSFER_TYPE",
-	"id": 100,
-	"rootId": "B3N0b3JhZ2UAZA",
+	"id": 101,
+	"rootId": "B3N0b3JhZ2UAZQ",
 	"versioned": false,
 	"encrypted": false,
 	"values": {
 		"_format": {
-			"id": 101,
+			"id": 102,
 			"type": "Number",
 			"cardinality": "One",
 			"final": false,
 			"encrypted": false
 		},
+		"field": {
+			"id": 105,
+			"type": "String",
+			"cardinality": "One",
+			"final": false,
+			"encrypted": false
+		},
 		"instanceListElementId": {
-			"id": 103,
+			"id": 104,
 			"type": "GeneratedId",
 			"cardinality": "One",
 			"final": false,
 			"encrypted": false
 		},
 		"instanceListId": {
-			"id": 102,
+			"id": 103,
 			"type": "GeneratedId",
 			"cardinality": "One",
 			"final": false,
@@ -41,7 +48,7 @@ export const _TypeModel: TypeModel = {
 	},
 	"associations": {
 		"blobs": {
-			"id": 105,
+			"id": 107,
 			"type": "AGGREGATION",
 			"cardinality": "Any",
 			"final": true,
@@ -49,7 +56,7 @@ export const _TypeModel: TypeModel = {
 			"dependency": "sys"
 		},
 		"type": {
-			"id": 104,
+			"id": 106,
 			"type": "AGGREGATION",
 			"cardinality": "One",
 			"final": true,
@@ -69,6 +76,7 @@ export type BlobReferenceDataDelete = {
 	_type: TypeRef<BlobReferenceDataDelete>;
 
 	_format: NumberString;
+	field: string;
 	instanceListElementId: Id;
 	instanceListId: Id;
 

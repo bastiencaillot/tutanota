@@ -225,7 +225,7 @@ export function convertDbToJsType(type: $Values<typeof ValueType>, value: Base64
 	}
 }
 
-function compressString(uncompressed: string): Uint8Array {
+export function compressString(uncompressed: string): Uint8Array {
 	return compress(stringToUtf8Uint8Array(uncompressed))
 }
 

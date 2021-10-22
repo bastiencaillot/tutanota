@@ -30,8 +30,15 @@ export const _TypeModel: TypeModel = {
 			"final": false,
 			"encrypted": false
 		},
+		"field": {
+			"id": 99,
+			"type": "String",
+			"cardinality": "One",
+			"final": false,
+			"encrypted": false
+		},
 		"instanceElementId": {
-			"id": 107,
+			"id": 109,
 			"type": "GeneratedId",
 			"cardinality": "ZeroOrOne",
 			"final": false,
@@ -54,7 +61,7 @@ export const _TypeModel: TypeModel = {
 	},
 	"associations": {
 		"type": {
-			"id": 99,
+			"id": 100,
 			"type": "AGGREGATION",
 			"cardinality": "One",
 			"final": true,
@@ -75,6 +82,7 @@ export type BlobReferenceDataPut = {
 
 	_format: NumberString;
 	blobReferenceToken: Uint8Array;
+	field: string;
 	instanceElementId: ?Id;
 	instanceListElementId: ?Id;
 	instanceListId: ?Id;

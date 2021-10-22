@@ -62,7 +62,7 @@ import type {EntityUpdate} from "../../entities/sys/EntityUpdate"
 import type {PhishingMarker} from "../../entities/tutanota/PhishingMarker"
 import {EntityClient} from "../../common/EntityClient"
 import {getEnabledMailAddressesForGroupInfo, getUserGroupMemberships} from "../../common/utils/GroupUtils";
-import {containsId, getLetId, isSameId, stringToCustomId} from "../../common/utils/EntityUtils";
+import {containsId, elementIdPart, getLetId, isSameId, listIdPart, stringToCustomId} from "../../common/utils/EntityUtils";
 import {isSameTypeRefByAttr} from "../../common/utils/TypeRef";
 import {htmlToText} from "../search/IndexUtils"
 import {ofClass, promiseFilter, promiseMap} from "../../common/utils/PromiseUtils"
@@ -75,13 +75,17 @@ import {SysService} from "../../entities/sys/Services"
 import {createPublicKeyData} from "../../entities/sys/PublicKeyData"
 import {createBlobId} from "../../entities/sys/BlobId"
 import {SessionKeyNotFoundError} from "../../common/error/SessionKeyNotFoundError"
-import {decompressString} from "../crypto/InstanceMapper"
+import {compressString, decompressString} from "../crypto/InstanceMapper"
 import {ProgrammingError} from "../../common/error/ProgrammingError"
 import {MailHeadersTypeRef} from "../../entities/tutanota/MailHeaders"
+import type {MailBody} from "../../entities/tutanota/MailBody"
 import {MailBodyTypeRef} from "../../entities/tutanota/MailBody"
 import type {Blob} from "../../entities/sys/Blob"
-import type {MailBody} from "../../entities/tutanota/MailBody"
 import {TutanotaError} from "../../common/error/TutanotaError"
+import {createBlobReferenceDataPut} from "../../entities/storage/BlobReferenceDataPut"
+import {createTypeInfo} from "../../entities/sys/TypeInfo"
+import {_TypeModel as FileDataTypeModel} from "../../entities/tutanota/FileData"
+import {StorageService} from "../../entities/storage/Services"
 
 assertWorkerOrNode()
 
@@ -94,6 +98,7 @@ export class MailFacade {
 	_deferredDraftId: ?IdTuple; // the mail id of the draft that we are waiting for to be updated via websocket
 	_deferredDraftUpdate: ?Object; // this deferred promise is resolved as soon as the update of the draft is received
 	_entity: EntityClient;
+	_useBlobs: boolean;
 
 	constructor(login: LoginFacadeImpl, fileFacade: FileFacade, entity: EntityClient) {
 		this._login = login
@@ -102,6 +107,7 @@ export class MailFacade {
 		this._deferredDraftId = null
 		this._deferredDraftUpdate = null
 		this._entity = entity
+		this._useBlobs = true // FIXME get this info from server somehow
 	}
 
 	createMailFolder(name: string, parent: IdTuple, ownerGroupId: Id): Promise<void> {
@@ -142,7 +148,9 @@ export class MailFacade {
 		service.symEncSessionKey = encryptKey(userGroupKey, sk) // legacy
 		service.draftData = createDraftData({
 			subject,
-			bodyText,
+			bodyText: !this._useBlobs
+				? bodyText
+				: null,
 			senderMailAddress,
 			senderName,
 			confidential,
@@ -156,13 +164,26 @@ export class MailFacade {
 				: []
 		})
 		const createDraftReturn = await serviceRequest(TutanotaService.DraftService, HttpMethod.POST, service, DraftCreateReturnTypeRef, null, sk)
+
+		if (this._useBlobs) {
+			const blobReferenceToken = await this._file.uploadBlob(MailTypeRef, sk, compressString(bodyText), senderMailGroupId)
+			const blobReferenceDataPut = createBlobReferenceDataPut({
+				blobReferenceToken,
+				type: createTypeInfo({application: FileDataTypeModel.app, typeId: String(FileDataTypeModel.id)}),
+				instanceListElementId: listIdPart(createDraftReturn.draft),
+				instanceElementId: elementIdPart(createDraftReturn.draft),
+				field: "bodyBlob"
+			})
+			await serviceRequestVoid(StorageService.BlobReferenceService, HttpMethod.PUT, blobReferenceDataPut)
+		}
+
 		return this._entity.load(MailTypeRef, createDraftReturn.draft)
 	}
 
 	/**
 	 * Updates a draft mail.
 	 * @param subject The subject of the mail.
-	 * @param body The body text of the mail.
+	 * @param bodyText The body text of the mail.
 	 * @param senderMailAddress The senders mail address.
 	 * @param senderName The name of the sender that is sent together with the mail address of the sender.
 	 * @param toRecipients The recipients the mail shall be sent to.
@@ -173,35 +194,38 @@ export class MailFacade {
 	 * @param draft The draft to update.
 	 * @return The updated draft. Rejected with TooManyRequestsError if the number allowed mails was exceeded, AccessBlockedError if the customer is not allowed to send emails currently because he is marked for approval.
 	 */
-	async updateDraft(subject: string, body: string, senderMailAddress: string, senderName: string,
+	async updateDraft(subject: string, bodyText: string, senderMailAddress: string, senderName: string,
 	                  toRecipients: Array<DraftRecipient>, ccRecipients: Array<DraftRecipient>, bccRecipients: Array<DraftRecipient>,
 	                  attachments: ?Attachments, confidential: boolean, draft: Mail): Promise<Mail> {
 
-		if (byteLength(body) > UNCOMPRESSED_MAX_SIZE) {
-			throw new MailBodyTooLargeError(`Can't update draft, mail body too large (${byteLength(body)})`)
+		if (byteLength(bodyText) > UNCOMPRESSED_MAX_SIZE) {
+			throw new MailBodyTooLargeError(`Can't update draft, mail body too large (${byteLength(bodyText)})`)
 		}
 
 		const senderMailGroupId = await getMailGroupIdForMailAddress(this._login.getLoggedInUser(), senderMailAddress)
 		const mailGroupKey = this._login.getGroupKey(senderMailGroupId)
 		const sk = decryptKey(mailGroupKey, (draft._ownerEncSessionKey: any))
 
-		const service = createDraftUpdateData()
-		service.draft = draft._id
-		service.draftData = createDraftData({
-			subject: subject,
-			bodyText: body,
-			senderMailAddress: senderMailAddress,
-			senderName: senderName,
-			confidential: confidential,
-			method: draft.method,
-			toRecipients,
-			ccRecipients,
-			bccRecipients,
-			replyTos: draft.replyTos,
-			removedAttachments: this._getRemovedAttachments(attachments, draft.attachments),
-			addedAttachments: attachments
-				? await this._createAddedAttachments(attachments, draft.attachments, mailGroupKey)
-				: [],
+		const draftUpdateData = createDraftUpdateData({
+			draft: draft._id,
+			draftData: createDraftData({
+				subject,
+				bodyText: !this._useBlobs
+					? bodyText
+					: null,
+				senderMailAddress,
+				senderName,
+				confidential,
+				method: draft.method,
+				toRecipients,
+				ccRecipients,
+				bccRecipients,
+				replyTos: draft.replyTos,
+				removedAttachments: this._getRemovedAttachments(attachments, draft.attachments),
+				addedAttachments: attachments
+					? await this._createAddedAttachments(attachments, draft.attachments, mailGroupKey)
+					: [],
+			})
 		})
 
 		this._deferredDraftId = draft._id
@@ -211,7 +235,19 @@ export class MailFacade {
 
 		// use a local reference here because this._deferredDraftUpdate is set to null when the event is received async
 		const deferredUpdatePromiseWrapper = this._deferredDraftUpdate
-		await serviceRequest(TutanotaService.DraftService, HttpMethod.PUT, service, DraftUpdateReturnTypeRef, null, sk)
+		await serviceRequest(TutanotaService.DraftService, HttpMethod.PUT, draftUpdateData, DraftUpdateReturnTypeRef, null, sk)
+
+		if (this._useBlobs) {
+			const blobReferenceToken = await this._file.uploadBlob(MailTypeRef, sk, compressString(bodyText), senderMailGroupId)
+			const blobReferenceDataPut = createBlobReferenceDataPut({
+				blobReferenceToken,
+				type: createTypeInfo({application: FileDataTypeModel.app, typeId: String(FileDataTypeModel.id)}),
+				instanceListElementId: listIdPart(draft._id),
+				instanceElementId: elementIdPart(draft._id),
+				field: "bodyBlob"
+			})
+			await serviceRequestVoid(StorageService.BlobReferenceService, HttpMethod.PUT, blobReferenceDataPut)
+		}
 		return deferredUpdatePromiseWrapper.promise
 	}
 
@@ -225,7 +261,8 @@ export class MailFacade {
 			// check which attachments have been removed
 			existingFileIds.forEach(fileId => {
 				if (!attachments.find(attachment =>
-					(attachment._type !== "DataFile" && attachment._type !== "FileReference" && isSameId(getLetId(attachment), fileId)))) {
+					(attachment._type !== "DataFile" && attachment._type !== "FileReference"
+						&& isSameId(getLetId(attachment), fileId)))) {
 					removedAttachmentIds.push(fileId);
 				}
 			})

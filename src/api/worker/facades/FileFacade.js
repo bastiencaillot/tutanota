@@ -453,7 +453,8 @@ export class FileFacade {
 			const blobReferenceDataPut = createBlobReferenceDataPut({
 				blobReferenceToken,
 				type: createTypeInfo({application: FileDataTypeModel.app, typeId: String(FileDataTypeModel.id)}),
-				instanceElementId: fileDataId
+				instanceElementId: fileDataId,
+				field: "blobs"
 			})
 			await serviceRequestVoid(StorageService.BlobReferenceService, HttpMethod.PUT, blobReferenceDataPut)
 		}
@@ -503,11 +504,19 @@ export class FileFacade {
 	/**
 	 * @returns blobReferenceToken
 	 */
-	async uploadBlob(instance: {_type: TypeRef<any>}, blobData: Uint8Array, ownerGroupId: Id): Promise<Uint8Array> {
+	async uploadBlobForInstance(instance: {_type: TypeRef<any>}, blobData: Uint8Array, ownerGroupId: Id): Promise<Uint8Array> {
 		const typeModel = await resolveTypeReference(instance._type)
-		const {storageAccessToken, servers} = await this._getUploadToken(typeModel, ownerGroupId)
-
 		const sessionKey = neverNull(await resolveSessionKey(typeModel, instance))
+		return await this._upLoadBlobForTypeWitKey(typeModel, ownerGroupId, sessionKey, blobData)
+	}
+
+	async uploadBlob(type: TypeRef<any>, sessionKey: BitArray, blobData: Uint8Array, ownerGroupId: Id): Promise<Uint8Array> {
+		const typeModel = await resolveTypeReference(type)
+		return await this._upLoadBlobForTypeWitKey(typeModel, ownerGroupId, sessionKey, blobData)
+	}
+
+	async _upLoadBlobForTypeWitKey(typeModel: TypeModel, ownerGroupId: Id, sessionKey: BitArray, blobData: Uint8Array): Promise<Uint8Array> {
+		const {storageAccessToken, servers} = await this._getUploadToken(typeModel, ownerGroupId)
 		const encryptedData = encryptBytes(sessionKey, blobData)
 		const blobId = _getBlobIdFromData(encryptedData)
 
@@ -525,9 +534,7 @@ export class FileFacade {
 				MediaType.Binary,
 				null, server.url)
 		))
-
 	}
-
 
 	async _getUploadToken(typeModel: TypeModel, ownerGroupId: Id): Promise<BlobAccessInfo> {
 		const tokenRequest = createBlobAccessTokenData({
