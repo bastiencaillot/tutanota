@@ -77,20 +77,18 @@ o.spec("MailIndexer test", () => {
 
 	o("createMailIndexEntries without entries", function () {
 		let mail = createMail()
-		let body = createMailBody()
 		let files = [createFile()]
 		let indexer = new MailIndexer(new IndexerCore(dbMock, (null: any), browserDataStub), (null: any), (null: any), (null: any), (null: any), dateProvider)
-		let keyToIndexEntries = indexer.createMailIndexEntries(mail, body, files)
+		let keyToIndexEntries = indexer.createMailIndexEntries(mail, null, files)
 		o(keyToIndexEntries.size).equals(0)
 	})
 
 	o("createMailIndexEntries with one entry", function () {
 		let mail = createMail()
 		mail.subject = "Hello"
-		let body = createMailBody()
 		let files = [createFile()]
 		let indexer = new MailIndexer(new IndexerCore(dbMock, (null: any), browserDataStub), (null: any), (null: any), (null: any), (null: any), dateProvider)
-		let keyToIndexEntries = indexer.createMailIndexEntries(mail, body, files)
+		let keyToIndexEntries = indexer.createMailIndexEntries(mail, null, files)
 		o(keyToIndexEntries.size).equals(1)
 	})
 
@@ -133,8 +131,7 @@ o.spec("MailIndexer test", () => {
 		mail.replyTos = [replyTo] // not indexed
 		mail.sender = sender
 
-		let body = createMailBody()
-		body.text = "BT"
+		const body = "BT"
 		let files = [createFile()]
 		files[0].mimeType = "binary" // not indexed
 		files[0].name = "FN"

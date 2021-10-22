@@ -42,10 +42,9 @@ export type MailBundle = {
  * @param sanitizer
  */
 export function makeMailBundle(mail: Mail, entityClient: EntityClient, mailFacade: MailFacade, fileFacade: FileFacade, sanitizer: HtmlSanitizer): Promise<MailBundle> {
-	const bodyTextPromise = entityClient.load(MailBodyTypeRef, mail.body)
-	                                    .then(getMailBodyText)
+	const bodyTextPromise = mailFacade.getMailBody(mail)
 	                                    .then(body =>
-		                                    sanitizer.sanitize(body, {
+		                                    sanitizer.sanitize(body ?? "", {
 			                                    blockExternalContent: false,
 			                                    allowRelativeLinks: false,
 			                                    usePlaceholderForInlineImages: false

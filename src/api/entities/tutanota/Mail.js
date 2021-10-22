@@ -89,6 +89,13 @@ export const _TypeModel: TypeModel = {
 			"final": true,
 			"encrypted": true
 		},
+		"headerCompression": {
+			"id": 1211,
+			"type": "Boolean",
+			"cardinality": "ZeroOrOne",
+			"final": false,
+			"encrypted": false
+		},
 		"listUnsubscribe": {
 			"id": 866,
 			"type": "Boolean",
@@ -176,6 +183,14 @@ export const _TypeModel: TypeModel = {
 			"refType": "MailAddress",
 			"dependency": null
 		},
+		"bodyBlob": {
+			"id": 1213,
+			"type": "AGGREGATION",
+			"cardinality": "ZeroOrOne",
+			"final": true,
+			"refType": "Blob",
+			"dependency": "sys"
+		},
 		"ccRecipients": {
 			"id": 113,
 			"type": "AGGREGATION",
@@ -185,7 +200,7 @@ export const _TypeModel: TypeModel = {
 			"dependency": null
 		},
 		"headersBlob": {
-			"id": 1211,
+			"id": 1212,
 			"type": "AGGREGATION",
 			"cardinality": "ZeroOrOne",
 			"final": true,
@@ -234,7 +249,7 @@ export const _TypeModel: TypeModel = {
 		"body": {
 			"id": 116,
 			"type": "ELEMENT_ASSOCIATION",
-			"cardinality": "One",
+			"cardinality": "ZeroOrOne",
 			"final": true,
 			"refType": "MailBody"
 		},
@@ -275,6 +290,7 @@ export type Mail = {
 	authStatus: NumberString;
 	confidential: boolean;
 	differentEnvelopeSender: ?string;
+	headerCompression: ?boolean;
 	listUnsubscribe: boolean;
 	method: NumberString;
 	movedTime: ?Date;
@@ -288,6 +304,7 @@ export type Mail = {
 	unread: boolean;
 
 	bccRecipients: MailAddress[];
+	bodyBlob: ?Blob;
 	ccRecipients: MailAddress[];
 	headersBlob: ?Blob;
 	replyTos: EncryptedMailAddress[];
@@ -295,7 +312,7 @@ export type Mail = {
 	sender: MailAddress;
 	toRecipients: MailAddress[];
 	attachments: IdTuple[];
-	body: Id;
+	body: ?Id;
 	conversationEntry: IdTuple;
 	headers: ?Id;
 }

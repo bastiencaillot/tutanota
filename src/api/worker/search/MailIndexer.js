@@ -31,7 +31,6 @@ import type {WorkerImpl} from "../WorkerImpl"
 import {flat, groupBy, splitInChunks} from "../../common/utils/ArrayUtils"
 import {DbError} from "../../common/error/DbError"
 import {EntityRestCache} from "../rest/EntityRestCache"
-import {InvalidDatabaseStateError} from "../../common/error/InvalidDatabaseStateError"
 import type {DateProvider} from "../DateProvider"
 import type {EntityUpdate} from "../../entities/sys/EntityUpdate"
 import type {User} from "../../entities/sys/User"
@@ -42,6 +41,7 @@ import {ProgressMonitor} from "../../common/utils/ProgressMonitor"
 import {elementIdPart, isSameId, listIdPart} from "../../common/utils/EntityUtils";
 import {TypeRef} from "../../common/utils/TypeRef";
 import {ofClass, promiseMap} from "../../common/utils/PromiseUtils"
+import {locator} from "../../worker/WorkerLocator"
 
 export const INITIAL_MAIL_INDEX_INTERVAL_DAYS = 28
 
@@ -60,17 +60,17 @@ export class MailIndexer {
 
 	_core: IndexerCore;
 	_db: Db;
-	_worker: WorkerImpl;
+	_workerImpl: WorkerImpl;
 	_entityRestClient: EntityRestInterface;
 	_defaultCachingEntity: EntityClient;
 	_dateProvider: DateProvider;
 
-	constructor(core: IndexerCore, db: Db, worker: WorkerImpl, entityRestClient: EntityRestInterface, defaultCachingRestClient: EntityRestInterface,
+	constructor(core: IndexerCore, db: Db, workerImpl: WorkerImpl, entityRestClient: EntityRestInterface, defaultCachingRestClient: EntityRestInterface,
 	            dateProvider: DateProvider) {
 		this._core = core
 		this._db = db
 		this._defaultCachingEntity = new EntityClient(defaultCachingRestClient)
-		this._worker = worker
+		this._workerImpl = workerImpl
 
 		this.currentIndexTimestamp = NOTHING_INDEXED_TIMESTAMP
 		this.mailIndexingEnabled = false
@@ -82,7 +82,7 @@ export class MailIndexer {
 	}
 
 
-	createMailIndexEntries(mail: Mail, mailBody: ?MailBody, files: TutanotaFile[]): Map<string, SearchIndexEntry[]> {
+	createMailIndexEntries(mail: Mail, mailBody: ?string, files: TutanotaFile[]): Map<string, SearchIndexEntry[]> {
 		let startTimeIndex = getPerformanceTimestamp()
 		let keyToIndexEntries = this._core.createIndexEntriesForAttributes(MailModel, mail, [
 			{
@@ -103,7 +103,7 @@ export class MailIndexer {
 			}, {
 				attribute: MailModel.associations["body"],
 				// Sometimes we encounter inconsistencies such as when deleted emails appear again
-				value: () => mailBody != null ? htmlToText(getMailBodyText(mailBody)) : ""
+				value: () => mailBody != null ? htmlToText(mailBody) : ""
 			}, {
 				attribute: MailModel.associations["attachments"],
 				value: () => files.map(file => file.name).join(" ")
@@ -121,7 +121,7 @@ export class MailIndexer {
 		           .then(mail => {
 			           return Promise.all([
 				           promiseMap(mail.attachments, attachmentId => this._defaultCachingEntity.load(FileTypeRef, attachmentId, null)),
-				           this._defaultCachingEntity.load(MailBodyTypeRef, mail.body, null)
+				           locator.mail.getMailBody(mail)
 			           ]).then(([files, body]) => {
 				           let keyToIndexEntries = this.createMailIndexEntries(mail, body, files)
 				           return {mail, keyToIndexEntries}
@@ -230,7 +230,7 @@ export class MailIndexer {
 		this._indexingCancelled = false
 
 		this._core.resetStats()
-		this._worker.sendIndexState({
+		this._workerImpl.sendIndexState({
 			initializing: false,
 			mailIndexEnabled: this.mailIndexingEnabled,
 			progress: 1,
@@ -276,7 +276,7 @@ export class MailIndexer {
 				this._core.printStatus()
 				return this.updateCurrentIndexTimestamp(user)
 				           .then(() =>
-					           this._worker.sendIndexState({
+					           this._workerImpl.sendIndexState({
 						           initializing: false,
 						           mailIndexEnabled: this.mailIndexingEnabled,
 						           progress: 0,
@@ -292,7 +292,7 @@ export class MailIndexer {
 
 				return this.updateCurrentIndexTimestamp(user)
 				           .then(() => {
-					           this._worker.sendIndexState({
+					           this._workerImpl.sendIndexState({
 						           initializing: false,
 						           mailIndexEnabled: this.mailIndexingEnabled,
 						           progress: 0,
@@ -314,7 +314,7 @@ export class MailIndexer {
 	_indexMailLists(mailBoxes: Array<{mbox: MailBox, newestTimestamp: number}>, oldestTimestamp: number): Promise<void> {
 		const newestTimestamp = mailBoxes.reduce((acc, data) => Math.max(acc, data.newestTimestamp), 0)
 		const progress = new ProgressMonitor(newestTimestamp - oldestTimestamp, progress => {
-			this._worker.sendIndexState({
+			this._workerImpl.sendIndexState({
 				initializing: false,
 				mailIndexEnabled: this.mailIndexingEnabled,
 				progress,
@@ -414,28 +414,32 @@ export class MailIndexer {
 		})
 	}
 
-	_processIndexMails(mails: Array<Mail>, indexUpdate: IndexUpdate, indexLoader: IndexLoader): Promise<number> {
+	async _processIndexMails(mails: Array<Mail>, indexUpdate: IndexUpdate, indexLoader: IndexLoader): Promise<number> {
 		if (this._indexingCancelled) throw new CancelledError("cancelled indexing in processing index mails")
-		const bodies = indexLoader.loadMailBodies(mails)
+		// TODO: move bodyBlob getting to this method and chunk it too
+		const bodies = indexLoader._loadLegacyMailBodies(mails)
 		const files = indexLoader.loadAttachments(mails)
-		return Promise.all([bodies, files])
-		              .then(([bodies, files]) => mails
-			              .map(mail => {
-				              const body = bodies.find(b => isSameId(b._id, mail.body))
-				              if (body == null) return null
-				              return {
-					              mail: mail,
-					              body,
-					              files: files.filter(file => mail.attachments.find(a => isSameId(a, file._id)))
-				              }
-			              })
-			              .filter(Boolean))
-		              .then((mailWithBodyAndFiles: {mail: Mail, body: MailBody, files: TutanotaFile[]}[]) => {
-			              mailWithBodyAndFiles.forEach(element => {
-				              let keyToIndexEntries = this.createMailIndexEntries(element.mail, element.body, element.files)
-				              this._core.encryptSearchIndexEntries(element.mail._id, neverNull(element.mail._ownerGroup), keyToIndexEntries, indexUpdate)
-			              })
-		              }).then(() => mails.length)
+		const mailsPromise = await Promise.all([bodies, files])
+		                                  .then(([bodies, files]) => mails
+			                                  .map(async mail => {
+				                                  const body = bodies.find(b => isSameId(b._id, mail.body))
+				                                  const bodyText = body == null
+					                                  ? await locator.mail.getMailBody(mail)
+					                                  : getMailBodyText(body)
+				                                  return {
+					                                  mail: mail,
+					                                  body: bodyText,
+					                                  files: files.filter(file => mail.attachments.find(a => isSameId(a, file._id)))
+				                                  }
+			                                  })
+		                                  )
+
+		const mailWithBodyAndFiles: {mail: Mail, body: ?string, files: TutanotaFile[]}[] = await Promise.all(mailsPromise)
+		mailWithBodyAndFiles.forEach(element => {
+			let keyToIndexEntries = this.createMailIndexEntries(element.mail, element.body, element.files)
+			this._core.encryptSearchIndexEntries(element.mail._id, neverNull(element.mail._ownerGroup), keyToIndexEntries, indexUpdate)
+		})
+		return mails.length
 	}
 
 	_writeIndexUpdate(dataPerGroup: Array<{groupId: Id, indexTimestamp: number}>, indexUpdate: IndexUpdate): Promise<void> {
@@ -587,8 +591,8 @@ class IndexLoader {
 		this._entityCache._tryRemoveFromCache(MailTypeRef, listIdPart(id), elementIdPart(id))
 	}
 
-	loadMailBodies(mails: Mail[]): Promise<MailBody[]> {
-		const ids = mails.map(m => m.body)
+	_loadLegacyMailBodies(mails: Mail[]): Promise<MailBody[]> {
+		const ids = mails.map(m => m.body).filter(Boolean)
 		return this._loadInChunks(MailBodyTypeRef, null, ids)
 	}
 

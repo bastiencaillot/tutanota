@@ -10,8 +10,6 @@ import {windowFacade} from "../../misc/WindowFacade"
 import {ease} from "../../gui/animation/Easing"
 import type {DomMutation} from "../../gui/animation/Animations"
 import {animations, scroll} from "../../gui/animation/Animations"
-import type {MailBody} from "../../api/entities/tutanota/MailBody"
-import {MailBodyTypeRef} from "../../api/entities/tutanota/MailBody"
 import type {CalendarMethodEnum, InboxRuleTypeEnum, MailReportTypeEnum} from "../../api/common/TutanotaConstants"
 import {
 	ConversationType,
@@ -123,6 +121,7 @@ import type {Link} from "../../misc/HtmlSanitizer"
 import {stringifyFragment} from "../../gui/HtmlUtils"
 import {IndexingNotSupportedError} from "../../api/common/error/IndexingNotSupportedError"
 import {ofClass} from "../../api/common/utils/PromiseUtils"
+import {CryptoError} from "../../api/common/error/CryptoError"
 
 assertMainOrNode()
 
@@ -155,7 +154,7 @@ type MailAddressAndName = {
 export class MailViewer {
 	view: Function;
 	mail: Mail;
-	_mailBody: ?MailBody;
+	_mailBodyText: Promise<?string>;
 	_contrastFixNeeded: boolean;
 	_sanitizedMailBody: ?string; // always sanitized in this.setSanitizedMailBodyFromMail
 	_loadingAttachments: boolean;
@@ -256,7 +255,8 @@ export class MailViewer {
 		}
 
 		// We call those sequentially as _loadAttachments() waits for _inlineFileIds to resolve
-		this._referencedCids = this._loadMailBody(mail)
+		this._mailBodyText = this._loadMailBody(mail)
+		this._referencedCids = this._getInlineCidsFromMail(mail)
 		this._loadedInlineImages = this._loadAttachments(mail)
 		this._loadedInlineImages.then(() => {
 			// load the conversation entry here because we expect it to be loaded immediately when responding to this email
@@ -422,7 +422,7 @@ export class MailViewer {
 	}
 
 	_didErrorsOccur(): boolean {
-		return this._errorOccurred || this.mail._errors || (this._mailBody != null && this._mailBody._errors)
+		return this._errorOccurred || this.mail._errors
 	}
 
 	_renderEventBanner(): Children {
@@ -889,25 +889,28 @@ export class MailViewer {
 		})
 	}
 
-	/** @return list of inline referenced cid */
-	async _loadMailBody(mail: Mail): Promise<Array<string>> {
-
+	async _loadMailBody(mail: Mail): Promise<?string> {
 		try {
-			this._mailBody = await this._entityClient.load(MailBodyTypeRef, mail.body)
+			return worker.mailFacade.getMailBody(mail)
 		} catch (e) {
 			if (e instanceof NotFoundError) {
-				console.log("could load mail body as it has been moved/deleted already", e)
+				console.log("could not load mail body as it has been moved/deleted already", e)
 				this._errorOccurred = true
-				return []
 			}
 			if (e instanceof NotAuthorizedError) {
-				console.log("could load mail body as the permission is missing", e)
+				console.log("could not load mail body as the permission is missing", e)
 				this._errorOccurred = true
-				return []
+			}
+			if (e instanceof CryptoError) {
+				console.log("could not load decrypt mail body", e)
+				this._errorOccurred = true
 			}
 			throw e
 		}
+	}
 
+	/** @return list of inline referenced cid */
+	async _getInlineCidsFromMail(mail: Mail): Promise<Array<string>> {
 		const externalImageRule = await worker.configFacade.getExternalImageRule(mail.sender.address)
 		                                      .catch(e => {
 			                                      console.log("Error getting external image rule:", e)
@@ -919,7 +922,7 @@ export class MailViewer {
 		// We should not try to sanitize body while we still animate because it's a heavy operation.
 		await this._delayBodyRenderingUntil
 
-		const sanitizeResult = await this.setSanitizedMailBodyFromMail(mail, !isAllowedAndAuthenticatedExternalSender)
+		const sanitizeResult = await this.setSanitizedMailBody(!isAllowedAndAuthenticatedExternalSender)
 
 		this._checkMailForPhishing(mail, sanitizeResult.links)
 
@@ -1268,11 +1271,11 @@ export class MailViewer {
 				if (minimizedEditor) {
 					locator.minimizedMailModel.reopenMinimizedEditor(minimizedEditor)
 				} else {
-					return Promise.all([this._mailModel.getMailboxDetailsForMail(this.mail), import("../editor/MailEditor")])
-					              .then(([mailboxDetails, {newMailEditorFromDraft}]) => {
+					return Promise.all([this._mailModel.getMailboxDetailsForMail(this.mail), import("../editor/MailEditor"), this._getMailBody()])
+					              .then(([mailboxDetails, {newMailEditorFromDraft}, mailBody]) => {
 						              return newMailEditorFromDraft(this.mail,
 							              this._attachments,
-							              this._getMailBody(),
+							              mailBody,
 							              this.isBlockingExternalImages(),
 							              this._loadedInlineImages,
 							              mailboxDetails)
@@ -1301,7 +1304,7 @@ export class MailViewer {
 				: ""
 			let infoLine = formatDateTime(this.mail.sentDate) + " " + lang.get("by_label") + " "
 				+ this.mail.sender.address + ":";
-			let body = infoLine + "<br><blockquote class=\"tutanota_quote\">" + this._getMailBody() + "</blockquote>";
+			let body = infoLine + "<br><blockquote class=\"tutanota_quote\">" + (await this._getMailBody()) + "</blockquote>";
 
 			let toRecipients = []
 			let ccRecipients = []
@@ -1355,12 +1358,8 @@ export class MailViewer {
 		}
 	}
 
-	_getMailBody(): string {
-		if (this._mailBody) {
-			return getMailBodyText(this._mailBody)
-		} else {
-			return ""
-		}
+	async _getMailBody(): Promise<string> {
+		return (await this._mailBodyText) ?? ""
 	}
 
 	_forward(): Promise<void> {
@@ -1386,7 +1385,7 @@ export class MailViewer {
 			|| this._contentBlockingStatus === ContentBlockingStatus.AlwaysBlock
 	}
 
-	_createResponseMailArgsForForwarding(recipients: MailAddress[], replyTos: EncryptedMailAddress[], addSignature: boolean): Promise<ResponseMailParameters> {
+	async _createResponseMailArgsForForwarding(recipients: MailAddress[], replyTos: EncryptedMailAddress[], addSignature: boolean): Promise<ResponseMailParameters> {
 		let infoLine = lang.get("date_label") + ": " + formatDateTime(this.mail.sentDate) + "<br>"
 		infoLine += lang.get("from_label") + ": " + this.mail.sender.address + "<br>"
 		if (this.mail.toRecipients.length > 0) {
@@ -1401,25 +1400,24 @@ export class MailViewer {
 		}
 
 		const mailSubject = this.mail.subject || ""
-		infoLine += lang.get("subject_label") + ": " + urlEncodeHtmlTags(mailSubject);
+		infoLine += lang.get("subject_label") + ": " + urlEncodeHtmlTags(mailSubject)
 
-		let body = infoLine + "<br><br><blockquote class=\"tutanota_quote\">" + this._getMailBody() + "</blockquote>";
+		let body = infoLine + "<br><br><blockquote class=\"tutanota_quote\">" + (await this._getMailBody()) + "</blockquote>"
 
-		return Promise.all([this._getSenderOfResponseMail(), import("../signature/Signature")])
-		              .then(([senderMailAddress, {prependEmailSignature}]) => {
-			              return {
-				              previousMail: this.mail,
-				              conversationType: ConversationType.FORWARD,
-				              senderMailAddress,
-				              toRecipients: recipients,
-				              ccRecipients: [],
-				              bccRecipients: [],
-				              attachments: this._attachments.slice(),
-				              subject: "FWD: " + mailSubject,
-				              bodyText: addSignature ? prependEmailSignature(body, logins) : body,
-				              replyTos,
-			              }
-		              })
+		let result0 = await Promise.all([this._getSenderOfResponseMail(), import("../signature/Signature")])
+		const [senderMailAddress, {prependEmailSignature}] = result0
+		return {
+			previousMail: this.mail,
+			conversationType: ConversationType.FORWARD,
+			senderMailAddress,
+			toRecipients: recipients,
+			ccRecipients: [],
+			bccRecipients: [],
+			attachments: this._attachments.slice(),
+			subject: "FWD: " + mailSubject,
+			bodyText: addSignature ? prependEmailSignature(body, logins) : body,
+			replyTos,
+		}
 	}
 
 	_getMailboxDetails(): Promise<MailboxDetail> {
@@ -1744,17 +1742,17 @@ export class MailViewer {
 		this._contentBlockingStatus = status
 
 		// We don't check mail authentication status here because the user has manually called this
-		await this.setSanitizedMailBodyFromMail(this.mail, this.isBlockingExternalImages())
+		await this.setSanitizedMailBody(this.isBlockingExternalImages())
 		this._domBodyDeferred = defer()
 		this._domBody = null
 		this._replaceInlineImages()
 	}
 
-	async setSanitizedMailBodyFromMail(mail: Mail, blockExternalContent: boolean): Promise<{inlineImageCids: Array<string>, links: Array<Link>, externalContent: Array<string>}> {
+	async setSanitizedMailBody(blockExternalContent: boolean): Promise<{inlineImageCids: Array<string>, links: Array<Link>, externalContent: Array<string>}> {
 		const {htmlSanitizer} = await import("../../misc/HtmlSanitizer")
-		const {html, inlineImageCids, links, externalContent} = htmlSanitizer.sanitizeFragment(this._getMailBody(), {
+		const {html, inlineImageCids, links, externalContent} = htmlSanitizer.sanitizeFragment(await this._getMailBody(), {
 			blockExternalContent,
-			allowRelativeLinks: isTutanotaTeamMail(mail)
+			allowRelativeLinks: isTutanotaTeamMail(this.mail)
 		})
 
 		/**
