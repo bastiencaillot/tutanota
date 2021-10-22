@@ -42,7 +42,7 @@ class AppDelegate : UIResponder,
 //      alarmManager: self.alarmManager
 //    )
     self.viewController = ViewController(
-      crypto: TUTCrypto(),
+      crypto: CryptoFacade(),
       contactsSource: ContactsSource(),
       themeManager: ThemeManager(),
       keychainManager: keychainManager,

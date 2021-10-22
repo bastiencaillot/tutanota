@@ -110,6 +110,8 @@
 		3D84F56E2722CEF900858A58 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56C2722CEF900858A58 /* FileUtils.swift */; };
 		3D84F5702722E4B700858A58 /* FileFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56F2722E4B700858A58 /* FileFacade.swift */; };
 		3D84F5712722E4B700858A58 /* FileFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56F2722E4B700858A58 /* FileFacade.swift */; };
+		3D84F5732722F35600858A58 /* CryptoFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F5722722F35600858A58 /* CryptoFacade.swift */; };
+		3D84F5742722F35600858A58 /* CryptoFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F5722722F35600858A58 /* CryptoFacade.swift */; };
 		3D87ECDF212D921700FD7315 /* ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D87ECDE212D921600FD7315 /* ionicons.ttf */; };
 		3D87ECE6212D9EB000FD7315 /* TUTIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D87ECE5212D9EB000FD7315 /* TUTIcons.m */; };
 		3D891F082105B12F0031E528 /* rsa_oaep_sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D891EFD2105B12E0031E528 /* rsa_oaep_sha256.c */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
@@ -262,6 +264,7 @@
 		3D84F56A2721B92C00858A58 /* MissedNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissedNotification.swift; sourceTree = "<group>"; };
 		3D84F56C2722CEF900858A58 /* FileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtils.swift; sourceTree = "<group>"; };
 		3D84F56F2722E4B700858A58 /* FileFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileFacade.swift; sourceTree = "<group>"; };
+		3D84F5722722F35600858A58 /* CryptoFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoFacade.swift; sourceTree = "<group>"; };
 		3D87ECDE212D921600FD7315 /* ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ionicons.ttf; sourceTree = "<group>"; };
 		3D87ECE4212D9EAF00FD7315 /* TUTIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUTIcons.h; sourceTree = "<group>"; };
 		3D87ECE5212D9EB000FD7315 /* TUTIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUTIcons.m; sourceTree = "<group>"; };
@@ -458,6 +461,7 @@
 				3D891F032105B12F0031E528 /* TUTAes128Facade.m */,
 				3D891EFD2105B12E0031E528 /* rsa_oaep_sha256.c */,
 				3D9B12A22721926E002B46A1 /* ValueEncryption.swift */,
+				3D84F5722722F35600858A58 /* CryptoFacade.swift */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -1515,6 +1519,7 @@
 				3D9B12B02721966C002B46A1 /* IdTuple.swift in Sources */,
 				3D9B12A7272192C2002B46A1 /* AlarmNotification.swift in Sources */,
 				3D378EFE2536F79A0001F1F3 /* TUTIcons.m in Sources */,
+				3D84F5742722F35600858A58 /* CryptoFacade.swift in Sources */,
 				3D378F002536F79A0001F1F3 /* TUTUtils.m in Sources */,
 				3D9B12A42721926E002B46A1 /* ValueEncryption.swift in Sources */,
 				3D378F022536F79A0001F1F3 /* TUTEncodingConverter.m in Sources */,
@@ -1576,6 +1581,7 @@
 				3D63A0E3233D009E00D05259 /* TUTLog.m in Sources */,
 				3D9B129D272189BB002B46A1 /* AlarmModel.swift in Sources */,
 				3DE1E44526666F0A0018C9DE /* UIColor+utils.swift in Sources */,
+				3D84F5732722F35600858A58 /* CryptoFacade.swift in Sources */,
 				3D0EB1F926F49E36002E5102 /* AppDelegate.swift in Sources */,
 				3D9B129A27216DE0002B46A1 /* Response.swift in Sources */,
 				3D9B12AC27219623002B46A1 /* NotificationSessionKey.swift in Sources */,

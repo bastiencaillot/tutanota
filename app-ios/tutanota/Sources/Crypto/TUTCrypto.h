@@ -7,30 +7,50 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface TUTPublicKey : NSObject
+@property(nonatomic, nonnull) NSNumber *version;
+@property(nonatomic, nonnull) NSNumber *keyLength;
+@property(nonatomic, nonnull) NSString *modulus;
+@property(nonatomic, nullable) NSNumber *publicExponent;
+
+-(instancetype) initWithDict:(NSDictionary<NSString *, id> *)dict;
+@end
+
+@interface TUTPrivateKey : TUTPublicKey
+@property(nonatomic, nonnull) NSString *privateExponent;
+@property(nonatomic, nonnull) NSString *primeP;
+@property(nonatomic, nonnull) NSString *primeQ;
+@property(nonatomic, nonnull) NSString *primeExponentP;
+@property(nonatomic, nonnull) NSString *primeExponentQ;
+@property(nonatomic, nonnull) NSString *crtCoefficient;
+
+-(instancetype) initWithDict:(NSDictionary<NSString *, id> *)dict;
+@end
+
+@interface TUTKeyPair : NSObject
+@property(nonatomic, nonnull) TUTPublicKey *publicKey;
+@property(nonatomic, nonnull) TUTPrivateKey *privateKey;
+@end
+
+/**
+   Low-level cryptographic operations.
+ */
 @interface TUTCrypto : NSObject
 
-/* Definitions from the Crypto.js interface. */
-- (void)generateRsaKeyWithSeed:(NSString *)base64Seed
-					completion:(void (^)(NSDictionary * _Nullable keyPair, NSError * _Nullable error))completion;
+- (TUTKeyPair *_Nullable)generateRsaKeyWithSeed:(NSString * _Nonnull)base64Seed error:(NSError **)error;
 
-- (void)rsaEncryptWithPublicKey:(NSObject * )publicKey
-					 base64Data:(NSString *)base64Data
-					 base64Seed:(NSString *)base64Seed
-					completion:(void (^)(NSString * _Nullable encryptedBase64, NSError * _Nullable error))completion;
+- (NSString *_Nullable)rsaEncryptWithPublicKey:(TUTPublicKey *_Nonnull)publicKey
+                                    base64Data:(NSString * _Nonnull)base64Data
+                                    base64Seed:(NSString * _Nonnull)base64Seed
+                                         error: (NSError **)error;
 
-- (void)rsaDecryptWithPrivateKey:(NSObject * )privateKey
-					  base64Data:(NSString *)base64Data
-					  completion:(void (^)(NSString * _Nullable decryptedBase64, NSError * _Nullable error))completion;
-
-- (void)aesEncryptFileWithKey:(NSString * )keyBase64
-					   atPath:(NSString *)filePath
-				   completion:(void(^)(NSDictionary<NSString *, NSString *> * _Nullable fileInfo, NSError * _Nullable error))completion;
-
-- (void)aesDecryptFileWithKey:(NSString * )base64key
-					   atPath:(NSString *)filePath
-				   completion:(void(^)(NSString * _Nullable filePath, NSError * _Nullable error))completion;
+- (NSString *_Nullable)rsaDecryptWithPrivateKey:(TUTPrivateKey *)privateKey
+                                     base64Data:(NSString *)base64Data
+                                          error:(NSError **)error;
 
 + (NSData * )sha256:(NSData *)data;
+
++ (NSData *)generateIv;
 
 @end
 

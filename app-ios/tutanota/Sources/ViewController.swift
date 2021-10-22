@@ -11,7 +11,7 @@ import WebKit
 import UserNotifications
 
 class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHandler, UIScrollViewDelegate {
-  private let crypto: TUTCrypto
+  private let crypto: CryptoFacade
   private var fileFacade: FileFacade!
   private let contactsSource: ContactsSource
   private let themeManager: ThemeManager
@@ -29,7 +29,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
   private var isDarkTheme = false
   
   init(
-    crypto: TUTCrypto,
+    crypto: CryptoFacade,
     contactsSource: ContactsSource,
     themeManager: ThemeManager,
     keychainManager: KeychainManager,
@@ -214,14 +214,14 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
       }
     case "rsaEncrypt":
       self.crypto.rsaEncrypt(
-        withPublicKey: args[0] as! NSObject,
+        publicKey: TUTPublicKey(dict: args[0] as! [String : Any]),
         base64Data: args[1] as! String,
         base64Seed: args[2] as! String,
         completion: sendResponseBlock
       )
     case "rsaDecrypt":
       self.crypto.rsaDecrypt(
-        withPrivateKey: args[0] as! NSObject,
+        privateKey: TUTPrivateKey(dict: args[0] as! [String : Any]),
         base64Data: args[1] as! String,
         completion: sendResponseBlock
       )
@@ -231,7 +231,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         self.loadMainPage(params: args[0] as! [String : String])
       }
     case "generateRsakey":
-      self.crypto.generateRsaKey(withSeed: args[0] as! String, completion: sendResponseBlock)
+      self.crypto.generateRsaKey(seed: args[0] as! String, completion: sendResponseBlock)
     case "openFileChooser":
       let rectDict = args[0] as! [String : Int]
       let rect = CGRect(
@@ -250,9 +250,9 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     case "getMimeType":
       self.fileFacade.getMimeType(path: args[0] as! String, completion: sendResponseBlock)
     case "aesEncryptFile":
-      self.crypto.aesEncryptFile(withKey: args[0] as! String, atPath: args[1] as! String, completion: sendResponseBlock)
+      self.crypto.encryptFile(key: args[0] as! String, atPath: args[1] as! String, completion: sendEncodableResponseBlock)
     case "aesDecryptFile":
-      self.crypto.aesDecryptFile(withKey: args[0] as! String, atPath: args[1] as! String, completion: sendResponseBlock)
+      self.crypto.decryptFile(key: args[0] as! String, atPath: args[1] as! String, completion: sendEncodableResponseBlock)
     case "upload":
       self.fileFacade.uploadFile(
         atPath: args[0] as! String,
