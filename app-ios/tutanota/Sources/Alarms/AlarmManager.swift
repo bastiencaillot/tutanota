@@ -64,7 +64,7 @@ class AlarmManager {
       }
       
       let userId: String = sseInfo.userIds[0]
-      additionalHeaders["userId"] = userId
+      additionalHeaders["userIds"] = userId
       if let lastNoficationId = self.userPreference.lastProcessedNotificationId {
         additionalHeaders["lastProcessedNotificationId"] = lastNoficationId
       }
@@ -114,8 +114,9 @@ class AlarmManager {
           self.userPreference.lastProcessedNotificationId = missedNotification.lastProcessedNotificationId
           self.processNewAlarms(missedNotification.alarmNotifications, completion: complete)
         default:
+          let errorId = httpResponse.allHeaderFields["Error-Id"]
           let error = NSError(domain: TUT_NETWORK_ERROR, code: httpResponse.statusCode, userInfo: [
-            "message": "Failed to fetch missed notification"
+            "message": "Failed to fetch missed notification, error id: \(errorId ?? "")"
           ])
           complete(error: error)
         }
