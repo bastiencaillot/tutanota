@@ -115,6 +115,7 @@
 		3D84F57D27231F1F00858A58 /* Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F57B27231F1F00858A58 /* Serialization.swift */; };
 		3D84F5822723225C00858A58 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F5812723225C00858A58 /* Utils.swift */; };
 		3D84F5832723225C00858A58 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F5812723225C00858A58 /* Utils.swift */; };
+		3D84F58527268EDE00858A58 /* AlarmModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F58427268EDE00858A58 /* AlarmModelTest.swift */; };
 		3D87ECDF212D921700FD7315 /* ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D87ECDE212D921600FD7315 /* ionicons.ttf */; };
 		3D87ECE6212D9EB000FD7315 /* TUTIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D87ECE5212D9EB000FD7315 /* TUTIcons.m */; };
 		3D891F082105B12F0031E528 /* rsa_oaep_sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D891EFD2105B12E0031E528 /* rsa_oaep_sha256.c */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
@@ -223,7 +224,6 @@
 		3DCE7AAD27200E0A0085E40D /* WebviewHacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AAA27200E0A0085E40D /* WebviewHacks.m */; };
 		3DD4A09020F8C6260086EB36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A08F20F8C6260086EB36 /* Assets.xcassets */; };
 		3DD4A09320F8C6260086EB36 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A09120F8C6260086EB36 /* LaunchScreen.storyboard */; };
-		3DD7A23522C5FD7500876B85 /* TUTAlarmModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DD7A23422C5FD7500876B85 /* TUTAlarmModelTest.m */; };
 		3DE1E44526666F0A0018C9DE /* UIColor+utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */; };
 		3DE1E446266672870018C9DE /* UIColor+utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */; };
 		3DE2E47822D5F198009A9368 /* Info-Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DE2E47722D5F198009A9368 /* Info-Debug.plist */; };
@@ -267,6 +267,7 @@
 		3D84F57827231E8600858A58 /* SSEInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSEInfo.swift; sourceTree = "<group>"; };
 		3D84F57B27231F1F00858A58 /* Serialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Serialization.swift; sourceTree = "<group>"; };
 		3D84F5812723225C00858A58 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		3D84F58427268EDE00858A58 /* AlarmModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmModelTest.swift; sourceTree = "<group>"; };
 		3D87ECDE212D921600FD7315 /* ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ionicons.ttf; sourceTree = "<group>"; };
 		3D87ECE4212D9EAF00FD7315 /* TUTIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUTIcons.h; sourceTree = "<group>"; };
 		3D87ECE5212D9EB000FD7315 /* TUTIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUTIcons.m; sourceTree = "<group>"; };
@@ -369,7 +370,6 @@
 		3DD4A09420F8C6260086EB36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DD4A09B20F8C6260086EB36 /* tutanotaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tutanotaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DD4A0A120F8C6260086EB36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3DD7A23422C5FD7500876B85 /* TUTAlarmModelTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTAlarmModelTest.m; sourceTree = "<group>"; };
 		3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+utils.swift"; sourceTree = "<group>"; };
 		3DE2E47722D5F198009A9368 /* Info-Debug.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Debug.plist"; sourceTree = "<group>"; };
 		3DE7B3422135855F003415BE /* TUTSubKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TUTSubKeys.h; sourceTree = "<group>"; };
@@ -1123,9 +1123,9 @@
 				3DA047BE212C1BBD0062C36C /* CompatibilityTestData.json */,
 				3D6A0AE9212C1701001CD791 /* CompatibilityTest.m */,
 				3DD4A0A120F8C6260086EB36 /* Info.plist */,
-				3DD7A23422C5FD7500876B85 /* TUTAlarmModelTest.m */,
 				3D63A0E4233D0C1400D05259 /* TUTLogTest.m */,
 				3DAA23A5267A202000219051 /* tutanotaTests-Bridging-Header.h */,
+				3D84F58427268EDE00858A58 /* AlarmModelTest.swift */,
 			);
 			path = tutanotaTests;
 			sourceTree = "<group>";
@@ -1587,8 +1587,8 @@
 				3D6A0AEA212C1701001CD791 /* CompatibilityTest.m in Sources */,
 				3D63A0E5233D0C1400D05259 /* TUTLogTest.m in Sources */,
 				3D4F1BFB26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
-				3DD7A23522C5FD7500876B85 /* TUTAlarmModelTest.m in Sources */,
 				3DAA23A9267A208200219051 /* UIColorExtensionsTest.swift in Sources */,
+				3D84F58527268EDE00858A58 /* AlarmModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

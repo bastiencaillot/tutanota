@@ -44,7 +44,9 @@ struct RepeatRule {
   let interval: Int
   let timeZone: String
   let endCondition: RepeatEndCondition
-  
+}
+
+extension RepeatRule {
   init(encrypted: EncryptedRepeatRule, sessionKey: Key) throws {
     self.frequency = try decrypt(base64: encrypted.frequency, key: sessionKey)
     self.interval = try decrypt(base64: encrypted.interval, key: sessionKey)

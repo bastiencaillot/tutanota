@@ -42,8 +42,7 @@ class AlarmModel {
         value: repeatRule.interval * ocurrences,
         to: calcEventStart
       )!
-      // TODO: comparison
-      if let endDate = endDate, endDate > ocurrenceDate  {
+      if let endDate = endDate, ocurrenceDate >= endDate  {
         break
       } else if ocurrenceDate >= now {
         block(ocurrences, ocurrenceDate)
@@ -86,7 +85,7 @@ class AlarmModel {
   }
   
   static func allDayDateLocal(dateUTC: Date) -> Date {
-    var calendar = NSCalendar.current
+    var calendar = Calendar.current
     let timeZone = TimeZone(identifier: "UTC")!
     calendar.timeZone = timeZone
     let components = calendar.dateComponents([.year, .month, .day], from: dateUTC)
@@ -108,7 +107,7 @@ class AlarmModel {
   }
   
   private static func isAllDayEvent(startTime: Date, endTime: Date) -> Bool {
-    var calendar = NSCalendar.current
+    var calendar = Calendar.current
     calendar.timeZone = TimeZone(abbreviation: "UTC")!
     
     let startComponents = calendar.dateComponents([.hour, .minute, .second], from: startTime)
