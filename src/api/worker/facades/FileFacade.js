@@ -507,15 +507,15 @@ export class FileFacade {
 	async uploadBlobForInstance(instance: {_type: TypeRef<any>}, blobData: Uint8Array, ownerGroupId: Id): Promise<Uint8Array> {
 		const typeModel = await resolveTypeReference(instance._type)
 		const sessionKey = neverNull(await resolveSessionKey(typeModel, instance))
-		return await this._upLoadBlobForTypeWitKey(typeModel, ownerGroupId, sessionKey, blobData)
+		return await this._uploadBlobForTypeWitKey(typeModel, ownerGroupId, sessionKey, blobData)
 	}
 
 	async uploadBlob(type: TypeRef<any>, sessionKey: BitArray, blobData: Uint8Array, ownerGroupId: Id): Promise<Uint8Array> {
 		const typeModel = await resolveTypeReference(type)
-		return await this._upLoadBlobForTypeWitKey(typeModel, ownerGroupId, sessionKey, blobData)
+		return await this._uploadBlobForTypeWitKey(typeModel, ownerGroupId, sessionKey, blobData)
 	}
 
-	async _upLoadBlobForTypeWitKey(typeModel: TypeModel, ownerGroupId: Id, sessionKey: BitArray, blobData: Uint8Array): Promise<Uint8Array> {
+	async _uploadBlobForTypeWitKey(typeModel: TypeModel, ownerGroupId: Id, sessionKey: BitArray, blobData: Uint8Array): Promise<Uint8Array> {
 		const {storageAccessToken, servers} = await this._getUploadToken(typeModel, ownerGroupId)
 		const encryptedData = encryptBytes(sessionKey, blobData)
 		const blobId = _getBlobIdFromData(encryptedData)

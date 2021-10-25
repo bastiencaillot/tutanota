@@ -84,7 +84,6 @@ import type {Blob} from "../../entities/sys/Blob"
 import {TutanotaError} from "../../common/error/TutanotaError"
 import {createBlobReferenceDataPut} from "../../entities/storage/BlobReferenceDataPut"
 import {createTypeInfo} from "../../entities/sys/TypeInfo"
-import {_TypeModel as FileDataTypeModel} from "../../entities/tutanota/FileData"
 import {StorageService} from "../../entities/storage/Services"
 
 assertWorkerOrNode()
@@ -141,12 +140,13 @@ export class MailFacade {
 		const userGroupKey = this._login.getUserGroupKey()
 		const mailGroupKey = this._login.getGroupKey(senderMailGroupId)
 		const sk = aes128RandomKey()
-		const service = createDraftCreateData()
-		service.previousMessageId = previousMessageId
-		service.conversationType = conversationType
-		service.ownerEncSessionKey = encryptKey(mailGroupKey, sk)
-		service.symEncSessionKey = encryptKey(userGroupKey, sk) // legacy
-		service.draftData = createDraftData({
+		const draftCreateData = createDraftCreateData({
+			previousMessageId,
+			conversationType,
+			ownerEncSessionKey: encryptKey(mailGroupKey, sk),
+			symEncSessionKey: encryptKey(userGroupKey, sk) //legacy
+		})
+		draftCreateData.draftData = createDraftData({
 			subject,
 			bodyText: !this._useBlobs
 				? bodyText
@@ -163,15 +163,15 @@ export class MailFacade {
 				? await this._createAddedAttachments(attachments, [], mailGroupKey)
 				: []
 		})
-		const createDraftReturn = await serviceRequest(TutanotaService.DraftService, HttpMethod.POST, service, DraftCreateReturnTypeRef, null, sk)
+		const createDraftReturn = await serviceRequest(TutanotaService.DraftService, HttpMethod.POST, draftCreateData, DraftCreateReturnTypeRef, null, sk)
 
 		if (this._useBlobs) {
 			const blobReferenceToken = await this._file.uploadBlob(MailTypeRef, sk, compressString(bodyText), senderMailGroupId)
 			const blobReferenceDataPut = createBlobReferenceDataPut({
 				blobReferenceToken,
-				type: createTypeInfo({application: FileDataTypeModel.app, typeId: String(FileDataTypeModel.id)}),
-				instanceListElementId: listIdPart(createDraftReturn.draft),
-				instanceElementId: elementIdPart(createDraftReturn.draft),
+				type: createTypeInfo({application: MailTypeModel.app, typeId: String(MailTypeModel.id)}),
+				instanceListId: listIdPart(createDraftReturn.draft),
+				instanceListElementId: elementIdPart(createDraftReturn.draft),
 				field: "bodyBlob"
 			})
 			await serviceRequestVoid(StorageService.BlobReferenceService, HttpMethod.PUT, blobReferenceDataPut)
@@ -241,9 +241,9 @@ export class MailFacade {
 			const blobReferenceToken = await this._file.uploadBlob(MailTypeRef, sk, compressString(bodyText), senderMailGroupId)
 			const blobReferenceDataPut = createBlobReferenceDataPut({
 				blobReferenceToken,
-				type: createTypeInfo({application: FileDataTypeModel.app, typeId: String(FileDataTypeModel.id)}),
-				instanceListElementId: listIdPart(draft._id),
-				instanceElementId: elementIdPart(draft._id),
+				type: createTypeInfo({application: MailTypeModel.app, typeId: String(MailTypeModel.id)}),
+				instanceListId: listIdPart(draft._id),
+				instanceListElementId: elementIdPart(draft._id),
 				field: "bodyBlob"
 			})
 			await serviceRequestVoid(StorageService.BlobReferenceService, HttpMethod.PUT, blobReferenceDataPut)
@@ -504,26 +504,25 @@ export class MailFacade {
 
 					let userEncEntropy = encryptBytes(externalUserGroupKey, random.generateRandomData(32))
 
-					let d = createExternalUserData()
-					d.verifier = verifier
-					d.userEncClientKey = encryptKey(externalUserGroupKey, clientKey)
-					d.externalUserEncUserGroupInfoSessionKey = encryptKey(externalUserGroupKey, externalUserGroupInfoSessionKey)
-					d.internalMailEncUserGroupInfoSessionKey = encryptKey(internalMailGroupKey, externalUserGroupInfoSessionKey)
-					d.externalUserEncMailGroupKey = encryptKey(externalUserGroupKey, externalMailGroupKey)
-					d.externalMailEncMailGroupInfoSessionKey = encryptKey(externalMailGroupKey, externalMailGroupInfoSessionKey)
-					d.internalMailEncMailGroupInfoSessionKey = encryptKey(internalMailGroupKey, externalMailGroupInfoSessionKey)
-					d.externalUserEncEntropy = userEncEntropy
-					d.externalUserEncTutanotaPropertiesSessionKey = encryptKey(externalUserGroupKey, tutanotaPropertiesSessionKey)
-					d.externalMailEncMailBoxSessionKey = encryptKey(externalMailGroupKey, mailboxSessionKey)
+					const externalUserData = createExternalUserData({
+						verifier,
+						userEncClientKey: encryptKey(externalUserGroupKey, clientKey),
+						externalUserEncUserGroupInfoSessionKey: encryptKey(externalUserGroupKey, externalUserGroupInfoSessionKey),
+						internalMailEncUserGroupInfoSessionKey: encryptKey(internalMailGroupKey, externalUserGroupInfoSessionKey),
+						externalUserEncMailGroupKey: encryptKey(externalUserGroupKey, externalMailGroupKey),
+						externalMailEncMailGroupInfoSessionKey: encryptKey(externalMailGroupKey, externalMailGroupInfoSessionKey),
+						internalMailEncMailGroupInfoSessionKey: encryptKey(internalMailGroupKey, externalMailGroupInfoSessionKey),
+						externalUserEncEntropy: userEncEntropy,
+						externalUserEncTutanotaPropertiesSessionKey: encryptKey(externalUserGroupKey, tutanotaPropertiesSessionKey),
+						externalMailEncMailBoxSessionKey: encryptKey(externalMailGroupKey, mailboxSessionKey),
+						userGroupData: createCreateExternalUserGroupData({
+							mailAddress: cleanedMailAddress,
+							externalPwEncUserGroupKey: encryptKey(externalUserPwKey, externalUserGroupKey),
+							internalUserEncUserGroupKey: encryptKey(this._login.getUserGroupKey(), externalUserGroupKey)
+						})
+					})
 
-					let userGroupData = createCreateExternalUserGroupData()
-					userGroupData.mailAddress = cleanedMailAddress
-					userGroupData.externalPwEncUserGroupKey = encryptKey(externalUserPwKey, externalUserGroupKey)
-					userGroupData.internalUserEncUserGroupKey = encryptKey(this._login.getUserGroupKey(), externalUserGroupKey)
-
-					d.userGroupData = userGroupData
-
-					return serviceRequestVoid(TutanotaService.ExternalUserService, HttpMethod.POST, d).then(() => {
+					return serviceRequestVoid(TutanotaService.ExternalUserService, HttpMethod.POST, externalUserData).then(() => {
 						return {externalUserGroupKey: externalUserGroupKey, externalMailGroupKey: externalMailGroupKey}
 					})
 				}))
