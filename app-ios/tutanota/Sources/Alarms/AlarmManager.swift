@@ -38,6 +38,7 @@ class AlarmManager {
   }
   
   func fetchMissedNotifications(_ completionHandler: @escaping (Error?) -> Void) {
+    TUTSLog("Adding fetch notificaiton operation to queue")
     self.fetchQueue.addAsyncOperation {[weak self] queueCompletionHandler in
       guard let self = self else {
         return

@@ -84,7 +84,7 @@ class AppDelegate : UIResponder,
     let contentAvailable = apsDict["content-available"]
     if contentAvailable as? Int == 1 {
       self.alarmManager.fetchMissedNotifications { err in
-        TUTSLog("Fetched missed notificaiton \(String(describing: err))")
+        TUTSLog("Fetched missed notificaiton after notification \(String(describing: err))")
         completionHandler(err != nil ? .failed : .newData)
       }
     }

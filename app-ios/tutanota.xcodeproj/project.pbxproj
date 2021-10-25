@@ -13,9 +13,7 @@
 		3D0EB1FA26F49E36002E5102 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0EB1F826F49E36002E5102 /* AppDelegate.swift */; };
 		3D0EB1FC26F4BEE4002E5102 /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0EB1FB26F4BEE4002E5102 /* AlarmManager.swift */; };
 		3D0EB1FD26F4BEE4002E5102 /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0EB1FB26F4BEE4002E5102 /* AlarmManager.swift */; };
-		3D2DE2C823FC387700FFB95B /* AsyncBlockOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D2DE2C723FC387700FFB95B /* AsyncBlockOperation.m */; };
 		3D378EE72536F51F0001F1F3 /* FileChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D378EE62536F51F0001F1F3 /* FileChooser.swift */; };
-		3D378EF02536F79A0001F1F3 /* AsyncBlockOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D2DE2C723FC387700FFB95B /* AsyncBlockOperation.m */; };
 		3D378EF22536F79A0001F1F3 /* FileChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D378EE62536F51F0001F1F3 /* FileChooser.swift */; };
 		3D378EFB2536F79A0001F1F3 /* rsa_oaep_sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D891EFD2105B12E0031E528 /* rsa_oaep_sha256.c */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
 		3D378EFE2536F79A0001F1F3 /* TUTIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D87ECE5212D9EB000FD7315 /* TUTIcons.m */; };
@@ -116,6 +114,8 @@
 		3D84F5822723225C00858A58 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F5812723225C00858A58 /* Utils.swift */; };
 		3D84F5832723225C00858A58 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F5812723225C00858A58 /* Utils.swift */; };
 		3D84F58527268EDE00858A58 /* AlarmModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F58427268EDE00858A58 /* AlarmModelTest.swift */; };
+		3D84F5872726A60A00858A58 /* AsyncBlockOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F5862726A60A00858A58 /* AsyncBlockOperation.swift */; };
+		3D84F5882726A60A00858A58 /* AsyncBlockOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F5862726A60A00858A58 /* AsyncBlockOperation.swift */; };
 		3D87ECDF212D921700FD7315 /* ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D87ECDE212D921600FD7315 /* ionicons.ttf */; };
 		3D87ECE6212D9EB000FD7315 /* TUTIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D87ECE5212D9EB000FD7315 /* TUTIcons.m */; };
 		3D891F082105B12F0031E528 /* rsa_oaep_sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = 3D891EFD2105B12E0031E528 /* rsa_oaep_sha256.c */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
@@ -244,8 +244,6 @@
 		3D0EB1F526F48854002E5102 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		3D0EB1F826F49E36002E5102 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3D0EB1FB26F4BEE4002E5102 /* AlarmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmManager.swift; sourceTree = "<group>"; };
-		3D2DE2C623FC387700FFB95B /* AsyncBlockOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AsyncBlockOperation.h; sourceTree = "<group>"; };
-		3D2DE2C723FC387700FFB95B /* AsyncBlockOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AsyncBlockOperation.m; sourceTree = "<group>"; };
 		3D378ED22536F3A80001F1F3 /* tutanota-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "tutanota-Bridging-Header.h"; sourceTree = "<group>"; };
 		3D378EE62536F51F0001F1F3 /* FileChooser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChooser.swift; sourceTree = "<group>"; };
 		3D378F5A2536F79A0001F1F3 /* tutanota debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "tutanota debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -268,6 +266,7 @@
 		3D84F57B27231F1F00858A58 /* Serialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Serialization.swift; sourceTree = "<group>"; };
 		3D84F5812723225C00858A58 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		3D84F58427268EDE00858A58 /* AlarmModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmModelTest.swift; sourceTree = "<group>"; };
+		3D84F5862726A60A00858A58 /* AsyncBlockOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncBlockOperation.swift; sourceTree = "<group>"; };
 		3D87ECDE212D921600FD7315 /* ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ionicons.ttf; sourceTree = "<group>"; };
 		3D87ECE4212D9EAF00FD7315 /* TUTIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUTIcons.h; sourceTree = "<group>"; };
 		3D87ECE5212D9EB000FD7315 /* TUTIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUTIcons.m; sourceTree = "<group>"; };
@@ -448,6 +447,8 @@
 		3D74536221089D5700B16F2E /* Crypto */ = {
 			isa = PBXGroup;
 			children = (
+				3D4F1BF826EBADE500E87BF5 /* TUTBigNum.h */,
+				3D4F1BF926EBADE500E87BF5 /* TUTBigNum.m */,
 				3DF3055B253853C300E942A8 /* TUTCrypto.h */,
 				3D891F002105B12E0031E528 /* TUTCrypto.m */,
 				3DE7B3422135855F003415BE /* TUTSubKeys.h */,
@@ -466,8 +467,6 @@
 			isa = PBXGroup;
 			children = (
 				3D378EE62536F51F0001F1F3 /* FileChooser.swift */,
-				3D4F1BF826EBADE500E87BF5 /* TUTBigNum.h */,
-				3D4F1BF926EBADE500E87BF5 /* TUTBigNum.m */,
 				3D84F56C2722CEF900858A58 /* FileUtils.swift */,
 				3D84F5752723112400858A58 /* FileViewer.swift */,
 			);
@@ -487,8 +486,6 @@
 				3D891F022105B12E0031E528 /* TUTEncodingConverter.m */,
 				3D63A0DD233CF7C900D05259 /* TUTLog.h */,
 				3D63A0E2233D009E00D05259 /* TUTLog.m */,
-				3D2DE2C623FC387700FFB95B /* AsyncBlockOperation.h */,
-				3D2DE2C723FC387700FFB95B /* AsyncBlockOperation.m */,
 				3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */,
 				3DC299FC2673668000E1E79F /* QueryUtils.swift */,
 				3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */,
@@ -500,6 +497,7 @@
 				3D84F57827231E8600858A58 /* SSEInfo.swift */,
 				3D84F57B27231F1F00858A58 /* Serialization.swift */,
 				3D84F5812723225C00858A58 /* Utils.swift */,
+				3D84F5862726A60A00858A58 /* AsyncBlockOperation.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1495,10 +1493,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D378EF02536F79A0001F1F3 /* AsyncBlockOperation.m in Sources */,
 				3D9B1295272167D4002B46A1 /* IconFactory.swift in Sources */,
 				3D378EF22536F79A0001F1F3 /* FileChooser.swift in Sources */,
 				3D84F5712722E4B700858A58 /* FileFacade.swift in Sources */,
+				3D84F5882726A60A00858A58 /* AsyncBlockOperation.swift in Sources */,
 				3D9B12A127218AF9002B46A1 /* RepeatRule.swift in Sources */,
 				3D4F1BFC26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
 				3D9B12B52721A1E2002B46A1 /* TUTErrorFactory.m in Sources */,
@@ -1539,7 +1537,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D2DE2C823FC387700FFB95B /* AsyncBlockOperation.m in Sources */,
 				3D9B1294272167D4002B46A1 /* IconFactory.swift in Sources */,
 				3D378EE72536F51F0001F1F3 /* FileChooser.swift in Sources */,
 				3D9B12A027218AF9002B46A1 /* RepeatRule.swift in Sources */,
@@ -1573,6 +1570,7 @@
 				3D9B129D272189BB002B46A1 /* AlarmModel.swift in Sources */,
 				3DE1E44526666F0A0018C9DE /* UIColor+utils.swift in Sources */,
 				3D84F57927231E8600858A58 /* SSEInfo.swift in Sources */,
+				3D84F5872726A60A00858A58 /* AsyncBlockOperation.swift in Sources */,
 				3D84F5732722F35600858A58 /* CryptoFacade.swift in Sources */,
 				3D0EB1F926F49E36002E5102 /* AppDelegate.swift in Sources */,
 				3D9B129A27216DE0002B46A1 /* Response.swift in Sources */,
