@@ -7,7 +7,7 @@ import {
 	findLastIndex, flat, flatMap, groupBy, groupByAndMap, groupByAndMapUniquely,
 	insertIntoSortedArray,
 	splitInChunks, symmetricDifference
-} from "../../../src/api/common/utils/ArrayUtils"
+} from "../lib/ArrayUtils"
 
 type ObjectWithId = {
 	v: number,

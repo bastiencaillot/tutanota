@@ -1,21 +1,28 @@
 // @flow
 
 import type {App} from "electron"
-import {base64ToBase64Url, stringToUtf8Uint8Array, uint8ArrayToBase64} from "../../api/common/utils/Encoding"
-import {filterInt, neverNull, randomIntFromInterval} from "../../api/common/utils/Utils"
+import type {TimeoutSetter} from "@tutao/tutanota-utils"
+import {
+	base64ToBase64Url,
+	filterInt,
+	neverNull,
+	randomIntFromInterval,
+	remove,
+	stringToUtf8Uint8Array,
+	uint8ArrayToBase64
+} from "@tutao/tutanota-utils"
 import type {DesktopNotifier} from '../DesktopNotifier.js'
 import type {WindowManager} from "../DesktopWindowManager.js"
 import type {DesktopConfig} from "../config/DesktopConfig"
 import {NotificationResult} from "../DesktopConstants"
 import {FileNotFoundError} from "../../api/common/error/FileNotFoundError"
 import type {DesktopAlarmScheduler} from "./DesktopAlarmScheduler"
-import type {DesktopNetworkClient} from "../DesktopNetworkClient"
+import type {DesktopClientRequest, DesktopNetworkClient} from "../DesktopNetworkClient"
 import {DesktopCryptoFacade} from "../DesktopCryptoFacade"
 import {_TypeModel as MissedNotificationTypeModel} from "../../api/entities/sys/MissedNotification"
 import type {DesktopAlarmStorage} from "./DesktopAlarmStorage"
 import type {LanguageViewModelType} from "../../misc/LanguageViewModel"
 import type {NotificationInfo} from "../../api/entities/sys/NotificationInfo"
-import {remove} from "../../api/common/utils/ArrayUtils"
 import {
 	handleRestError,
 	NotAuthenticatedError,
@@ -26,8 +33,6 @@ import {
 import {TutanotaError} from "../../api/common/error/TutanotaError"
 import {log} from "../DesktopLog"
 import {DesktopConfigEncKey, DesktopConfigKey} from "../config/ConfigKeys"
-import type {DesktopClientRequest} from "../DesktopNetworkClient"
-import type {TimeoutSetter} from "../../api/common/utils/Utils"
 
 export type SseInfo = {|
 	identifier: string,

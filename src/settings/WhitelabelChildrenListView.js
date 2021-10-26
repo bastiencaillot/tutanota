@@ -2,14 +2,13 @@
 import m from "mithril"
 import {List} from "../gui/base/List"
 import {load, loadAll} from "../api/main/Entity"
-import {assertMainOrNode} from "../api/common/Env"
 import {lang} from "../misc/LanguageViewModel"
 import {NotFoundError} from "../api/common/error/RestError"
 import {size} from "../gui/size"
 import {CustomerTypeRef} from "../api/entities/sys/Customer"
-import {neverNull, noOp} from "../api/common/utils/Utils"
+import {neverNull, noOp} from "@tutao/tutanota-utils"
 import type {SettingsView} from "./SettingsView"
-import {LazyLoaded} from "../api/common/utils/LazyLoaded"
+import {LazyLoaded} from "@tutao/tutanota-utils"
 import {logins} from "../api/main/LoginController"
 import {Icon} from "../gui/base/Icon"
 import {Icons} from "../gui/base/icons/Icons"
@@ -21,7 +20,8 @@ import type {EntityUpdateData} from "../api/main/EventController"
 import {isUpdateForTypeRef} from "../api/main/EventController"
 import type {WhitelabelChild} from "../api/entities/sys/WhitelabelChild"
 import {GENERATED_MAX_ID} from "../api/common/utils/EntityUtils";
-import {ofClass, promiseMap} from "../api/common/utils/PromiseUtils"
+import {ofClass, promiseMap} from "@tutao/tutanota-utils"
+import {assertMainOrNode} from "../api/common/Env"
 
 assertMainOrNode()
 

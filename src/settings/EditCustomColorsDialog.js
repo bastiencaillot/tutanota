@@ -1,7 +1,6 @@
 // @flow
 import m from "mithril"
 import {lang} from "../misc/LanguageViewModel"
-import {assertMainOrNode} from "../api/common/Env"
 import {Dialog} from "../gui/base/Dialog"
 import {ButtonType} from "../gui/base/ButtonN"
 import type {Theme} from "../gui/theme"
@@ -11,8 +10,9 @@ import {Keys} from "../api/common/TutanotaConstants"
 import type {TextFieldAttrs} from "../gui/base/TextFieldN"
 import {TextFieldN} from "../gui/base/TextFieldN"
 import stream from "mithril/stream/stream.js"
-import {downcast} from "../api/common/utils/Utils"
+import {downcast} from "@tutao/tutanota-utils"
 import {VALID_HEX_CODE_FORMAT} from "../gui/base/Color"
+import {assertMainOrNode} from "../api/common/Env"
 
 assertMainOrNode()
 
