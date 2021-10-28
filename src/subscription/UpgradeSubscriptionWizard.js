@@ -31,6 +31,7 @@ import {Dialog} from "../gui/base/Dialog"
 import {InvoiceAndPaymentDataPage, InvoiceAndPaymentDataPageAttrs} from "./InvoiceAndPaymentDataPage"
 import {UpgradeConfirmPage, UpgradeConfirmPageAttrs} from "./UpgradeConfirmPage"
 import {SignupPage, SignupPageAttrs} from "./SignupPage"
+import {getCampaign} from "../misc/LoginUtils"
 
 assertMainOrNode()
 
@@ -72,23 +73,6 @@ export type UpgradeSubscriptionData = {
 	planPrices: SubscriptionPlanPrices,
 	currentSubscription: ?SubscriptionTypeEnum,
 	subscriptionParameters: ?SubscriptionParameters
-}
-
-const TOKEN_PARAM_NAME = "#token="
-
-function getCampaign(): ?string {
-	const hashString = location.hash
-	if (hashString.startsWith(TOKEN_PARAM_NAME)) {
-		const tokenFromUrl = hashString.substring(TOKEN_PARAM_NAME.length)
-		if (client.localStorage()) {
-			localStorage.setItem(CAMPAIGN_KEY, tokenFromUrl)
-		}
-		return tokenFromUrl
-	} else if (client.localStorage()) {
-		return localStorage.getItem(CAMPAIGN_KEY)
-	} else {
-		return null
-	}
 }
 
 export function deleteCampaign(): void {
@@ -163,7 +147,7 @@ export function showUpgradeWizard(): void {
 		)
 }
 
-export function loadSignupWizard(subscriptionParameters: ?SubscriptionParameters): Promise<Dialog> {
+export function loadSignupWizard(subscriptionParameters: ?SubscriptionParameters, campaign: ?string): Promise<Dialog> {
 	return loadUpgradePrices().then(prices => {
 		const planPrices: SubscriptionPlanPrices = {
 			Premium: prices.premiumPrices,
@@ -192,7 +176,7 @@ export function loadSignupWizard(subscriptionParameters: ?SubscriptionParameters
 			accountingInfo: null,
 			customer: null,
 			newAccountData: null,
-			campaign: getCampaign(),
+			campaign,
 			campaignInfoTextId: prices.messageTextId ? assertTranslation(prices.messageTextId) : null,
 			upgradeType: UpgradeType.Signup,
 			planPrices: planPrices,
