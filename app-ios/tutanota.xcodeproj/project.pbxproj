@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -224,6 +224,10 @@
 		3DCE7AAD27200E0A0085E40D /* WebviewHacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AAA27200E0A0085E40D /* WebviewHacks.m */; };
 		3DD4A09020F8C6260086EB36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A08F20F8C6260086EB36 /* Assets.xcassets */; };
 		3DD4A09320F8C6260086EB36 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A09120F8C6260086EB36 /* LaunchScreen.storyboard */; };
+		3DD4EA342726B61000D58207 /* Native.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4EA332726B61000D58207 /* Native.swift */; };
+		3DD4EA352726B61000D58207 /* Native.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4EA332726B61000D58207 /* Native.swift */; };
+		3DD4EA372726D32E00D58207 /* Native.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4EA362726D32E00D58207 /* Native.swift */; };
+		3DD4EA3B2726F41200D58207 /* DictionaryCoding in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD4EA3A2726F41200D58207 /* DictionaryCoding */; };
 		3DE1E44526666F0A0018C9DE /* UIColor+utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */; };
 		3DE1E446266672870018C9DE /* UIColor+utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */; };
 		3DE2E47822D5F198009A9368 /* Info-Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DE2E47722D5F198009A9368 /* Info-Debug.plist */; };
@@ -369,6 +373,8 @@
 		3DD4A09420F8C6260086EB36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DD4A09B20F8C6260086EB36 /* tutanotaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tutanotaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DD4A0A120F8C6260086EB36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DD4EA332726B61000D58207 /* Native.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native.swift; sourceTree = "<group>"; };
+		3DD4EA362726D32E00D58207 /* Native.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native.swift; sourceTree = "<group>"; };
 		3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+utils.swift"; sourceTree = "<group>"; };
 		3DE2E47722D5F198009A9368 /* Info-Debug.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Debug.plist"; sourceTree = "<group>"; };
 		3DE7B3422135855F003415BE /* TUTSubKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TUTSubKeys.h; sourceTree = "<group>"; };
@@ -390,6 +396,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DD4EA3B2726F41200D58207 /* DictionaryCoding in Frameworks */,
 				3D891F152105B8AF0031E528 /* libcrypto.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,6 +447,7 @@
 				3DC299F9267358AF00E1E79F /* ThemeManager.swift */,
 				3D0EB1F826F49E36002E5102 /* AppDelegate.swift */,
 				3DCE7AA6271D63BF0085E40D /* ViewController.swift */,
+				3DD4EA332726B61000D58207 /* Native.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -1124,6 +1132,7 @@
 				3D63A0E4233D0C1400D05259 /* TUTLogTest.m */,
 				3DAA23A5267A202000219051 /* tutanotaTests-Bridging-Header.h */,
 				3D84F58427268EDE00858A58 /* AlarmModelTest.swift */,
+				3DD4EA362726D32E00D58207 /* Native.swift */,
 			);
 			path = tutanotaTests;
 			sourceTree = "<group>";
@@ -1174,6 +1183,9 @@
 			dependencies = (
 			);
 			name = tutanota;
+			packageProductDependencies = (
+				3DD4EA3A2726F41200D58207 /* DictionaryCoding */,
+			);
 			productName = tutanota;
 			productReference = 3DD4A08320F8C6240086EB36 /* tutanota.app */;
 			productType = "com.apple.product-type.application";
@@ -1316,6 +1328,9 @@
 				bg,
 			);
 			mainGroup = 3DD4A07A20F8C6240086EB36;
+			packageReferences = (
+				3DD4EA392726F41200D58207 /* XCRemoteSwiftPackageReference "DictionaryCoding" */,
+			);
 			productRefGroup = 3DD4A08420F8C6240086EB36 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1495,6 +1510,7 @@
 			files = (
 				3D9B1295272167D4002B46A1 /* IconFactory.swift in Sources */,
 				3D378EF22536F79A0001F1F3 /* FileChooser.swift in Sources */,
+				3DD4EA352726B61000D58207 /* Native.swift in Sources */,
 				3D84F5712722E4B700858A58 /* FileFacade.swift in Sources */,
 				3D84F5882726A60A00858A58 /* AsyncBlockOperation.swift in Sources */,
 				3D9B12A127218AF9002B46A1 /* RepeatRule.swift in Sources */,
@@ -1561,6 +1577,7 @@
 				3D9B12A927219538002B46A1 /* AlarmInfo.swift in Sources */,
 				3D84F5702722E4B700858A58 /* FileFacade.swift in Sources */,
 				3D84F57C27231F1F00858A58 /* Serialization.swift in Sources */,
+				3DD4EA342726B61000D58207 /* Native.swift in Sources */,
 				3DE7B3442135855F003415BE /* TUTSubKeys.m in Sources */,
 				3D84F56D2722CEF900858A58 /* FileUtils.swift in Sources */,
 				3DCE7AA7271D63BF0085E40D /* ViewController.swift in Sources */,
@@ -1582,6 +1599,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DD4EA372726D32E00D58207 /* Native.swift in Sources */,
 				3D6A0AEA212C1701001CD791 /* CompatibilityTest.m in Sources */,
 				3D63A0E5233D0C1400D05259 /* TUTLogTest.m in Sources */,
 				3D4F1BFB26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
@@ -2468,6 +2486,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3DD4EA392726F41200D58207 /* XCRemoteSwiftPackageReference "DictionaryCoding" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elegantchaos/DictionaryCoding.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3DD4EA3A2726F41200D58207 /* DictionaryCoding */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DD4EA392726F41200D58207 /* XCRemoteSwiftPackageReference "DictionaryCoding" */;
+			productName = DictionaryCoding;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3DD4A07B20F8C6240086EB36 /* Project object */;
 }
