@@ -12,34 +12,34 @@ export const _TypeModel: TypeModel = {
 	"name": "BlobReferenceDataDelete",
 	"since": 1,
 	"type": "DATA_TRANSFER_TYPE",
-	"id": 101,
-	"rootId": "B3N0b3JhZ2UAZQ",
+	"id": 100,
+	"rootId": "B3N0b3JhZ2UAZA",
 	"versioned": false,
 	"encrypted": false,
 	"values": {
 		"_format": {
-			"id": 102,
+			"id": 101,
 			"type": "Number",
 			"cardinality": "One",
 			"final": false,
 			"encrypted": false
 		},
 		"field": {
-			"id": 105,
+			"id": 109,
 			"type": "String",
 			"cardinality": "One",
 			"final": false,
 			"encrypted": false
 		},
 		"instanceListElementId": {
-			"id": 104,
+			"id": 103,
 			"type": "GeneratedId",
 			"cardinality": "One",
 			"final": false,
 			"encrypted": false
 		},
 		"instanceListId": {
-			"id": 103,
+			"id": 102,
 			"type": "GeneratedId",
 			"cardinality": "One",
 			"final": false,
@@ -48,7 +48,7 @@ export const _TypeModel: TypeModel = {
 	},
 	"associations": {
 		"blobs": {
-			"id": 107,
+			"id": 105,
 			"type": "AGGREGATION",
 			"cardinality": "Any",
 			"final": true,
@@ -56,7 +56,7 @@ export const _TypeModel: TypeModel = {
 			"dependency": "sys"
 		},
 		"type": {
-			"id": 106,
+			"id": 104,
 			"type": "AGGREGATION",
 			"cardinality": "One",
 			"final": true,

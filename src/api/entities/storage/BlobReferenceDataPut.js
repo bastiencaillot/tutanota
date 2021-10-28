@@ -31,14 +31,14 @@ export const _TypeModel: TypeModel = {
 			"encrypted": false
 		},
 		"field": {
-			"id": 99,
+			"id": 108,
 			"type": "String",
 			"cardinality": "One",
 			"final": false,
 			"encrypted": false
 		},
 		"instanceElementId": {
-			"id": 109,
+			"id": 107,
 			"type": "GeneratedId",
 			"cardinality": "ZeroOrOne",
 			"final": false,
@@ -61,7 +61,7 @@ export const _TypeModel: TypeModel = {
 	},
 	"associations": {
 		"type": {
-			"id": 100,
+			"id": 99,
 			"type": "AGGREGATION",
 			"cardinality": "One",
 			"final": true,

@@ -85,6 +85,7 @@ import {TutanotaError} from "../../common/error/TutanotaError"
 import {createBlobReferenceDataPut} from "../../entities/storage/BlobReferenceDataPut"
 import {createTypeInfo} from "../../entities/sys/TypeInfo"
 import {StorageService} from "../../entities/storage/Services"
+import {utf8Uint8ArrayToString} from "../../common/utils/Encoding"
 
 assertWorkerOrNode()
 
@@ -320,9 +321,10 @@ export class MailFacade {
 		const senderMailGroupId = await getMailGroupIdForMailAddress(this._login.getLoggedInUser(), draft.sender.address)
 		const bucketKey = aes128RandomKey()
 
-		const sendDraftData = createSendDraftData()
-		sendDraftData.language = language
-		sendDraftData.mail = draft._id
+		const sendDraftData = createSendDraftData({
+			language,
+			mail: draft._id
+		})
 		for (let fileId of draft.attachments) {
 			const file = await this._entity.load(FileTypeRef, fileId)
 			const fileSessionKey = await resolveSessionKey(FileTypeModel, file)
@@ -621,7 +623,9 @@ export class MailFacade {
 			bitArrayToUint8Array(key)
 		)
 
-		return decompressString(blobData)
+		return mail.bodyCompression
+			? decompressString(blobData)
+			: utf8Uint8ArrayToString(blobData)
 	}
 }
 

@@ -75,6 +75,13 @@ export const _TypeModel: TypeModel = {
 			"final": false,
 			"encrypted": false
 		},
+		"bodyCompression": {
+			"id": 1212,
+			"type": "Boolean",
+			"cardinality": "ZeroOrOne",
+			"final": false,
+			"encrypted": false
+		},
 		"confidential": {
 			"id": 426,
 			"type": "Boolean",
@@ -184,7 +191,7 @@ export const _TypeModel: TypeModel = {
 			"dependency": null
 		},
 		"bodyBlob": {
-			"id": 1213,
+			"id": 1214,
 			"type": "AGGREGATION",
 			"cardinality": "ZeroOrOne",
 			"final": true,
@@ -200,7 +207,7 @@ export const _TypeModel: TypeModel = {
 			"dependency": null
 		},
 		"headersBlob": {
-			"id": 1212,
+			"id": 1213,
 			"type": "AGGREGATION",
 			"cardinality": "ZeroOrOne",
 			"final": true,
@@ -288,6 +295,7 @@ export type Mail = {
 	_ownerGroup: ?Id;
 	_permissions: Id;
 	authStatus: NumberString;
+	bodyCompression: ?boolean;
 	confidential: boolean;
 	differentEnvelopeSender: ?string;
 	headerCompression: ?boolean;
