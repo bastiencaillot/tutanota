@@ -211,6 +211,8 @@
 		3D9B12B52721A1E2002B46A1 /* TUTErrorFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D9B12B22721A1E2002B46A1 /* TUTErrorFactory.m */; };
 		3DA047BF212C1BBE0062C36C /* CompatibilityTestData.json in Resources */ = {isa = PBXBuildFile; fileRef = 3DA047BE212C1BBD0062C36C /* CompatibilityTestData.json */; };
 		3DAA23A9267A208200219051 /* UIColorExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA23A8267A208200219051 /* UIColorExtensionsTest.swift */; };
+		3DB07C7B27303F0600BFBB4D /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB07C7A27303F0600BFBB4D /* Keys.swift */; };
+		3DB07C7C27303F0600BFBB4D /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB07C7A27303F0600BFBB4D /* Keys.swift */; };
 		3DC299FA267358AF00E1E79F /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299F9267358AF00E1E79F /* ThemeManager.swift */; };
 		3DC299FB267358AF00E1E79F /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299F9267358AF00E1E79F /* ThemeManager.swift */; };
 		3DC299FD2673668000E1E79F /* QueryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299FC2673668000E1E79F /* QueryUtils.swift */; };
@@ -224,8 +226,6 @@
 		3DCE7AAD27200E0A0085E40D /* WebviewHacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DCE7AAA27200E0A0085E40D /* WebviewHacks.m */; };
 		3DD4A09020F8C6260086EB36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A08F20F8C6260086EB36 /* Assets.xcassets */; };
 		3DD4A09320F8C6260086EB36 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DD4A09120F8C6260086EB36 /* LaunchScreen.storyboard */; };
-		3DD4EA342726B61000D58207 /* Native.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4EA332726B61000D58207 /* Native.swift */; };
-		3DD4EA352726B61000D58207 /* Native.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4EA332726B61000D58207 /* Native.swift */; };
 		3DD4EA372726D32E00D58207 /* Native.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD4EA362726D32E00D58207 /* Native.swift */; };
 		3DD4EA3B2726F41200D58207 /* DictionaryCoding in Frameworks */ = {isa = PBXBuildFile; productRef = 3DD4EA3A2726F41200D58207 /* DictionaryCoding */; };
 		3DE1E44526666F0A0018C9DE /* UIColor+utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */; };
@@ -361,6 +361,7 @@
 		3DA047BE212C1BBD0062C36C /* CompatibilityTestData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CompatibilityTestData.json; sourceTree = "<group>"; };
 		3DAA23A5267A202000219051 /* tutanotaTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "tutanotaTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		3DAA23A8267A208200219051 /* UIColorExtensionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensionsTest.swift; sourceTree = "<group>"; };
+		3DB07C7A27303F0600BFBB4D /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		3DC299F9267358AF00E1E79F /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		3DC299FC2673668000E1E79F /* QueryUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryUtils.swift; sourceTree = "<group>"; };
 		3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferenceFacade.swift; sourceTree = "<group>"; };
@@ -373,7 +374,6 @@
 		3DD4A09420F8C6260086EB36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DD4A09B20F8C6260086EB36 /* tutanotaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tutanotaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DD4A0A120F8C6260086EB36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3DD4EA332726B61000D58207 /* Native.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native.swift; sourceTree = "<group>"; };
 		3DD4EA362726D32E00D58207 /* Native.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Native.swift; sourceTree = "<group>"; };
 		3DE1E44426666F0A0018C9DE /* UIColor+utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+utils.swift"; sourceTree = "<group>"; };
 		3DE2E47722D5F198009A9368 /* Info-Debug.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Debug.plist"; sourceTree = "<group>"; };
@@ -447,7 +447,6 @@
 				3DC299F9267358AF00E1E79F /* ThemeManager.swift */,
 				3D0EB1F826F49E36002E5102 /* AppDelegate.swift */,
 				3DCE7AA6271D63BF0085E40D /* ViewController.swift */,
-				3DD4EA332726B61000D58207 /* Native.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -467,6 +466,7 @@
 				3D891EFD2105B12E0031E528 /* rsa_oaep_sha256.c */,
 				3D9B12A22721926E002B46A1 /* ValueEncryption.swift */,
 				3D84F5722722F35600858A58 /* CryptoFacade.swift */,
+				3DB07C7A27303F0600BFBB4D /* Keys.swift */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -1510,7 +1510,6 @@
 			files = (
 				3D9B1295272167D4002B46A1 /* IconFactory.swift in Sources */,
 				3D378EF22536F79A0001F1F3 /* FileChooser.swift in Sources */,
-				3DD4EA352726B61000D58207 /* Native.swift in Sources */,
 				3D84F5712722E4B700858A58 /* FileFacade.swift in Sources */,
 				3D84F5882726A60A00858A58 /* AsyncBlockOperation.swift in Sources */,
 				3D9B12A127218AF9002B46A1 /* RepeatRule.swift in Sources */,
@@ -1534,6 +1533,7 @@
 				3DC299FE2673668000E1E79F /* QueryUtils.swift in Sources */,
 				3D378F032536F79A0001F1F3 /* TUTAes128Facade.m in Sources */,
 				3DC299FB267358AF00E1E79F /* ThemeManager.swift in Sources */,
+				3DB07C7C27303F0600BFBB4D /* Keys.swift in Sources */,
 				3D9B129827216D60002B46A1 /* ContactsSource.swift in Sources */,
 				3D9B12AA27219538002B46A1 /* AlarmInfo.swift in Sources */,
 				3D378F052536F79A0001F1F3 /* TUTSubKeys.m in Sources */,
@@ -1557,6 +1557,7 @@
 				3D378EE72536F51F0001F1F3 /* FileChooser.swift in Sources */,
 				3D9B12A027218AF9002B46A1 /* RepeatRule.swift in Sources */,
 				3D4F1BFA26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
+				3DB07C7B27303F0600BFBB4D /* Keys.swift in Sources */,
 				3D84F5822723225C00858A58 /* Utils.swift in Sources */,
 				3D9B12B42721A1E2002B46A1 /* TUTErrorFactory.m in Sources */,
 				3D84F56B2721B92C00858A58 /* MissedNotification.swift in Sources */,
@@ -1577,7 +1578,6 @@
 				3D9B12A927219538002B46A1 /* AlarmInfo.swift in Sources */,
 				3D84F5702722E4B700858A58 /* FileFacade.swift in Sources */,
 				3D84F57C27231F1F00858A58 /* Serialization.swift in Sources */,
-				3DD4EA342726B61000D58207 /* Native.swift in Sources */,
 				3DE7B3442135855F003415BE /* TUTSubKeys.m in Sources */,
 				3D84F56D2722CEF900858A58 /* FileUtils.swift in Sources */,
 				3DCE7AA7271D63BF0085E40D /* ViewController.swift in Sources */,

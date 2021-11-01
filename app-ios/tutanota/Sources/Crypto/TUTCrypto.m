@@ -32,26 +32,50 @@ static NSInteger const PUBLIC_EXPONENT = 65537;
 static const NSString *const PUBLIC_EXPONENT_STRING = @"65537";
 
 @implementation TUTPublicKey : NSObject
--(instancetype) initWithDict:(NSDictionary<NSString *, id> *)dict {
+- (instancetype)initWithVersion:(NSInteger)version
+                      keyLength:(NSInteger)keyLength
+                        modulus:(NSString *)modulus
+                 publicExponent:(NSInteger)publicExponent {
   self = [super init];
-  for (NSString *key in dict) {
-    [self setValue:dict[key] forKey:key];
-  }
+  _version = version;
+  _keyLength = keyLength;
+  _modulus = modulus;
+  _publicExponent = publicExponent;
   return self;
 }
 @end
 
 @implementation TUTPrivateKey : TUTPublicKey
--(instancetype) initWithDict:(NSDictionary<NSString *, id> *)dict {
-  self = [super init];
-  for (NSString *key in dict) {
-    [self setValue:dict[key] forKey:key];
-  }
+- (instancetype)initWithVersion:(NSInteger)version
+                      keyLength:(NSInteger)keyLength
+                        modulus:(NSString *)modulus
+                 publicExponent:(NSInteger)publicExponent
+                privateExponent:(NSString *)privateExponent
+                         primeP:(NSString *)primeP
+                         primeQ:(NSString *)primeQ
+                 primeExponentP:(NSString *)primeExponentP
+                 primeExponentQ:(NSString *)primeExponentQ
+                 crtCoefficient:(NSString *)crtCoefficient {
+
+  self = [super initWithVersion:version keyLength:keyLength modulus:modulus publicExponent:publicExponent];
+  _privateExponent = privateExponent;
+  _primeP = primeP;
+  _primeQ = primeQ;
+  _primeExponentP = primeExponentP;
+  _primeExponentQ = self.primeExponentQ;
+  _crtCoefficient = crtCoefficient;
   return self;
 }
 @end
 
 @implementation TUTKeyPair : NSObject
+- (instancetype)initWithPublicKey:(TUTPublicKey *)publicKey
+                       privateKey:(TUTPrivateKey *)privateKey {
+  self = [super init];
+  _publicKey = publicKey;
+  _privateKey = privateKey;
+  return self;
+}
 @end
 
 @interface TUTCrypto ()
@@ -75,8 +99,8 @@ static const NSString *const PUBLIC_EXPONENT_STRING = @"65537";
   TUTKeyPair *keyPair;
   if (status > 0){
     keyPair = [TUTCrypto createRSAKeyPair:rsaKey
-                                keyLength:[NSNumber numberWithInteger: RSA_KEY_LENGTH_IN_BITS]
-                                  version:[NSNumber numberWithInt:0]];
+                                keyLength:RSA_KEY_LENGTH_IN_BITS
+                                  version:0];
   } else {
     *error = [TUTCrypto logOpenSslError:@"Error while generating rsa key" statusCode:status];
   }
@@ -211,33 +235,29 @@ static const NSString *const PUBLIC_EXPONENT_STRING = @"65537";
 
 
 + (TUTKeyPair *)createRSAKeyPair:(RSA*)key
-                       keyLength:(NSNumber*)keyLength
-                         version:(NSNumber*)version
+                       keyLength:(NSInteger)keyLength
+                         version:(NSInteger)version
 {
-  let publicKey = [TUTPublicKey new];
-  publicKey.version = version;
-  publicKey.keyLength = keyLength;
-  publicKey.modulus = [TUTBigNum toB64:key->n];
-  publicKey.publicExponent = @(PUBLIC_EXPONENT);
+  let modulus = [TUTBigNum toB64:key->n];
+  let publicKey = [[TUTPublicKey alloc] initWithVersion:version
+                                              keyLength:keyLength
+                                                modulus:modulus
+                                         publicExponent:PUBLIC_EXPONENT
+  ];
   
-  let privateKey = [TUTPrivateKey new];
-  privateKey.version = version;
-  privateKey.keyLength = keyLength;
-  privateKey.modulus = [TUTBigNum toB64:key->n];
-  privateKey.publicExponent = @(PUBLIC_EXPONENT);
+  let privateKey = [[TUTPrivateKey alloc] initWithVersion:version
+                                                keyLength:keyLength
+                                                modulus:modulus
+                                                publicExponent:PUBLIC_EXPONENT
+                                                privateExponent:[TUTBigNum toB64:key->d]
+                                                primeP:[TUTBigNum toB64:key->p]
+                                                primeQ:[TUTBigNum toB64:key->q]
+                                                primeExponentP:[TUTBigNum toB64:key->dmp1]
+                                                primeExponentQ:[TUTBigNum toB64:key->dmq1]
+                                                crtCoefficient:[TUTBigNum toB64:key->iqmp]
+  ];
   
-  privateKey.privateExponent = [TUTBigNum toB64:key->d];
-  privateKey.primeP = [TUTBigNum toB64:key->p];
-  privateKey.primeQ = [TUTBigNum toB64:key->q];
-  privateKey.primeExponentP = [TUTBigNum toB64:key->dmp1];
-  privateKey.primeExponentQ = [TUTBigNum toB64:key->dmq1];
-  privateKey.crtCoefficient = [TUTBigNum toB64:key->iqmp];
-  
-  let keyPair = [TUTKeyPair new];
-  keyPair.privateKey = privateKey;
-  keyPair.publicKey = publicKey;
-
-	return keyPair;
+  return [[TUTKeyPair alloc] initWithPublicKey:publicKey privateKey:privateKey];
 }
 
 + (NSData *)generateIv {

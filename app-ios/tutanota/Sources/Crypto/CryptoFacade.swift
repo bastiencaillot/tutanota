@@ -27,30 +27,37 @@ class CryptoFacade {
     }
   }
   
-  func generateRsaKey(seed: Base64, completion: @escaping ResponseCallback<TUTKeyPair>) {
+  func generateRsaKey(seed: Base64, completion: @escaping ResponseCallback<KeyPair>) {
     self.run(completion) {
-      return try self.crypto.generateRsaKey(withSeed: seed)
+      let tutKeyPair = try self.crypto.generateRsaKey(withSeed: seed)
+      return KeyPair(tutKeyPair)
     }
   }
   
   func rsaEncrypt(
-    publicKey: TUTPublicKey,
+    publicKey: PublicKey,
     base64Data: String,
     base64Seed: String,
     completion: @escaping ResponseCallback<String>
   ) {
     self.run(completion) {
-      return try self.crypto.rsaEncrypt(with: publicKey, base64Data: base64Data, base64Seed: base64Seed)
+      return try self.crypto.rsaEncrypt(
+        with: publicKey.toObjcKey(),
+        base64Data: base64Data,
+        base64Seed: base64Seed
+      )
     }
   }
   
   func rsaDecrypt(
-    privateKey: TUTPrivateKey,
+    privateKey: PrivateKey,
     base64Data: String,
     completion: @escaping ResponseCallback<String>
   ) {
     self.run(completion) {
-      return try self.crypto.rsaDecrypt(with: privateKey, base64Data: base64Data)
+      return try self.crypto.rsaDecrypt(with: privateKey.toObjcKey(),
+                                        base64Data: base64Data
+      )
     }
   }
   

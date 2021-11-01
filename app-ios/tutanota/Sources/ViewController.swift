@@ -9,6 +9,7 @@
 import UIKit
 import WebKit
 import UserNotifications
+import DictionaryCoding
 
 class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHandler, UIScrollViewDelegate {
   private let crypto: CryptoFacade
@@ -187,24 +188,19 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
   }
   
   private func handleRequest(type: String, requestId: String, args: [Any]) {
-    func sendResponseBlock<T: Any>(_ result: Result<T, Error>) {
+    func respond<T: Encodable>(_ result: Result<T, Error>) {
       switch result {
       case let .success(value):
-        sendResponse(requestId: requestId, value: value)
+        self.sendResponse(requestId: requestId, value: value)
       case let .failure(error):
         self.sendErrorResponse(requestId: requestId, err: error)
       }
     }
     
-    func sendEncodableResponseBlock<T: Encodable>(_ result: Result<T, Error>) {
-      let json = result.map { v in encodableToNSOjbect(value: v) }
-      sendResponseBlock(json)
-    }
-    
     switch type {
     case "init":
       self.webviewInitialized = true
-      sendResponseBlock(.success("ios"))
+      respond(.success("ios"))
       for callback in requestsBeforeInit {
         callback()
       }
@@ -214,17 +210,19 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         self.sendRequest(method: "invalidateAlarms", args: [], completion: nil)
       }
     case "rsaEncrypt":
+      let publicKey = try! DictionaryDecoder().decode(PublicKey.self, from: args[0] as! NSDictionary)
       self.crypto.rsaEncrypt(
-        publicKey: TUTPublicKey(dict: args[0] as! [String : Any]),
+        publicKey: publicKey,
         base64Data: args[1] as! String,
         base64Seed: args[2] as! String,
-        completion: sendResponseBlock
+        completion: respond
       )
     case "rsaDecrypt":
+      let privateKey = try! DictionaryDecoder().decode(PrivateKey.self, from: args[0] as! NSDictionary)
       self.crypto.rsaDecrypt(
-        privateKey: TUTPrivateKey(dict: args[0] as! [String : Any]),
+        privateKey: privateKey,
         base64Data: args[1] as! String,
-        completion: sendResponseBlock
+        completion: respond
       )
     case "reload":
       self.webviewInitialized = false
@@ -232,7 +230,7 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         self.loadMainPage(params: args[0] as! [String : String])
       }
     case "generateRsakey":
-      self.crypto.generateRsaKey(seed: args[0] as! String, completion: sendResponseBlock)
+      self.crypto.generateRsaKey(seed: args[0] as! String, completion: respond)
     case "openFileChooser":
       let rectDict = args[0] as! [String : Int]
       let rect = CGRect(
@@ -241,47 +239,47 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         width: rectDict["width"]!,
         height: rectDict["height"]!
       )
-      self.fileFacade.openFileChooser(anchor: rect, completion: sendResponseBlock)
+      self.fileFacade.openFileChooser(anchor: rect, completion: respond)
     case "getName":
-      self.fileFacade.getName(path: args[0] as! String, completion: sendResponseBlock)
+      self.fileFacade.getName(path: args[0] as! String, completion: respond)
     case "changeLanguage":
-      sendResponseBlock(.success(NSNull()))
+      respond(.success(nil as String?))
     case "getSize":
-      self.fileFacade.getSize(path: args[0] as! String, completion: sendResponseBlock)
+      self.fileFacade.getSize(path: args[0] as! String, completion: respond)
     case "getMimeType":
-      self.fileFacade.getMimeType(path: args[0] as! String, completion: sendResponseBlock)
+      self.fileFacade.getMimeType(path: args[0] as! String, completion: respond)
     case "aesEncryptFile":
-      self.crypto.encryptFile(key: args[0] as! String, atPath: args[1] as! String, completion: sendEncodableResponseBlock)
+      self.crypto.encryptFile(key: args[0] as! String, atPath: args[1] as! String, completion: respond)
     case "aesDecryptFile":
-      self.crypto.decryptFile(key: args[0] as! String, atPath: args[1] as! String, completion: sendEncodableResponseBlock)
+      self.crypto.decryptFile(key: args[0] as! String, atPath: args[1] as! String, completion: respond)
     case "upload":
       self.fileFacade.uploadFile(
         atPath: args[0] as! String,
         toUrl: args[1] as! String,
         withHeaders: args[2] as! [String : String],
-        completion: sendEncodableResponseBlock
+        completion: respond
       )
     case "deleteFile":
       self.fileFacade.deleteFile(path: args[0] as! String) { _ in
-        sendResponseBlock(.success(NSNull()))
+        respond(nullResult())
       }
     case "clearFileData":
       self.fileFacade.clearFileData { error in
-        sendResponseBlock(nullResult(error: error))
+        respond(nullResult(error: error))
       }
     case "download":
       self.fileFacade.downloadFile(
         fromUrl: args[0] as! String,
         forName: args[1] as! String,
         withHeaders: args[2] as! [String : String],
-        completion: sendEncodableResponseBlock
+        completion: respond
       )
     case "open":
       self.fileFacade.openFile(path: args[0] as! String) {
-        self.sendResponse(requestId: requestId, value: NSNull())
+        respond(nullResult())
       }
     case "getPushIdentifier":
-      self.appDelegate.registerForPushNotifications(callback: sendResponseBlock)
+      self.appDelegate.registerForPushNotifications(callback: respond)
     case "storePushIdentifierLocally":
       self.userPreferences.store(
         pushIdentifier: args[0] as! String,
@@ -289,62 +287,61 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
         sseOrigin: args[2] as! String
       )
       let keyData = Data(base64Encoded: args[4] as! String)!
-      do {
+      let result: Result<String?, Error> = Result {
         try self.keychainManager.storeKey(keyData, withId: args[3] as! String)
-        self.sendResponse(requestId: requestId, value: NSNull())
-      } catch {
-        self.sendErrorResponse(requestId: requestId, err: error)
+        return nil
       }
+      respond(result)
     case "findSuggestions":
       self.contactsSource.search(
         query: args[0] as! String,
-        completion: sendEncodableResponseBlock
+        completion: respond
       )
     case "closePushNotifications":
       UIApplication.shared.applicationIconBadgeNumber = 0
-      sendResponseBlock(.success(NSNull()))
+      respond(nullResult(error: nil))
     case "openLink":
       UIApplication.shared.open(
         URL(string: args[0] as! String)!,
         options: [:]) { success in
-          sendResponseBlock(.success(success))
+          respond(.success(success))
       }
     case "saveBlob":
       let fileDataB64 = args[1] as! String
       let fileData = Data(base64Encoded: fileDataB64)!
       self.fileFacade.openFile(name: args[0] as! String, data: fileData) { err in
-        sendResponseBlock(nullResult(error: err))
+        respond(nullResult(error: err))
       }
     case "getDeviceLog":
       let result = Result { try self.getLogfile() }
-      sendResponseBlock(result)
+      respond(result)
     case "scheduleAlarms":
       let alarmsJson = args[0] as! [[String : Any]]
       let alarmsData = try! JSONSerialization.data(withJSONObject: alarmsJson, options: [])
       let alarms = try! JSONDecoder().decode(Array<EncryptedAlarmNotification>.self, from: alarmsData)
       self.alarmManager.processNewAlarms(alarms) { error in
-        sendResponseBlock(nullResult(error: error))
+        respond(nullResult(error: error))
       }
     case "getSelectedTheme":
-      sendResponseBlock(.success(self.themeManager.selectedThemeId))
+      respond(.success(self.themeManager.selectedThemeId))
     case "setSelectedTheme":
       let themeId = args[0] as! String
       self.themeManager.selectedThemeId = themeId
       self.applyTheme(self.themeManager.currentThemeWithFallback)
-      sendResponseBlock(.success(NSNull()))
+      respond(nullResult())
     case "getThemes":
-      sendResponseBlock(.success(self.themeManager.themes))
+      respond(.success(self.themeManager.themes))
     case "setThemes":
       let themes = args[0] as! [Theme]
       self.themeManager.themes = themes
       self.applyTheme(self.themeManager.currentThemeWithFallback)
-      sendResponseBlock(.success(NSNull()))
+      respond(nullResult())
     default:
       let message = "Unknown comand: \(type)"
       TUTSLog(message)
       let error = NSError(domain: "tutanota", code: 5, userInfo: ["message": message])
       
-      sendResponseBlock(nullResult(error: error))
+      respond(nullResult(error: error))
     }
   }
   
@@ -361,13 +358,10 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     return fileUrl.path
   }
   
-  private func sendResponse(requestId: String, value: Any) {
-    let response = [
-      "id": requestId,
-      "type": "response",
-      "value": value
-    ]
-    self.postMessage(message: response)
+  private func sendResponse<T: Encodable>(requestId: String, value: T) {
+    let response = Response(id: requestId, type: "response", value: value)
+    let data = try! JSONEncoder().encode(response)
+    self.postMessage(jsonData: data)
   }
   
   private func sendErrorResponse(requestId: String, err: Error) {
@@ -390,13 +384,17 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
     ])
   }
   
-  private func postMessage(message: [String : Any]) {
-    let jsonData = try! JSONSerialization.data(withJSONObject: message, options: [])
+  private func postMessage(jsonData: Data) {
     DispatchQueue.main.async {
       let base64 = jsonData.base64EncodedString()
       let js = "tutao.nativeApp.handleMessageFromNative('\(base64)')"
       self.webView.evaluateJavaScript(js, completionHandler: nil)
     }
+  }
+  
+  private func postMessage(message: [String : Any]) {
+    let jsonData = try! JSONSerialization.data(withJSONObject: message, options: [])
+    self.postMessage(jsonData: jsonData)
   }
   
   private func handleResponse(id: String, value: Any?) {
@@ -477,10 +475,29 @@ class ViewController : UIViewController, WKNavigationDelegate, WKScriptMessageHa
   }
 }
 
-fileprivate func nullResult(error: Error?) -> Result<NSNull, Error> {
+fileprivate func nullResult() -> Result<String?, Error> {
+  return .success(nil)
+}
+
+fileprivate func nullResult(error: Error?) -> Result<String?, Error> {
   if let error = error {
     return .failure(error)
   } else {
-    return .success(NSNull())
+    return .success(nil)
   }
+}
+
+fileprivate struct Response<T : Encodable> : Encodable {
+  let id: String
+  let value: T
+}
+
+fileprivate struct ResponseError : Codable {
+  let name: String
+  let message: String
+}
+
+fileprivate struct ErrorResponse : Codable {
+  let id: String
+  
 }

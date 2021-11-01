@@ -8,28 +8,43 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TUTPublicKey : NSObject
-@property(nonatomic, nonnull) NSNumber *version;
-@property(nonatomic, nonnull) NSNumber *keyLength;
-@property(nonatomic, nonnull) NSString *modulus;
-@property(nonatomic, nullable) NSNumber *publicExponent;
+@property(nonatomic, readonly) NSInteger version;
+@property(nonatomic, readonly) NSInteger keyLength;
+@property(nonatomic, readonly) NSString *modulus;
+@property(nonatomic, readonly) NSInteger publicExponent;
 
--(instancetype) initWithDict:(NSDictionary<NSString *, id> *)dict;
+-(instancetype)initWithVersion:(NSInteger)version
+                     keyLength:(NSInteger)keyLength
+                       modulus:(NSString *)modulus
+                publicExponent:(NSInteger)publicExponent;
 @end
 
 @interface TUTPrivateKey : TUTPublicKey
-@property(nonatomic, nonnull) NSString *privateExponent;
-@property(nonatomic, nonnull) NSString *primeP;
-@property(nonatomic, nonnull) NSString *primeQ;
-@property(nonatomic, nonnull) NSString *primeExponentP;
-@property(nonatomic, nonnull) NSString *primeExponentQ;
-@property(nonatomic, nonnull) NSString *crtCoefficient;
+@property(nonatomic, nonnull, readonly) NSString *privateExponent;
+@property(nonatomic, nonnull, readonly) NSString *primeP;
+@property(nonatomic, nonnull, readonly) NSString *primeQ;
+@property(nonatomic, nonnull, readonly) NSString *primeExponentP;
+@property(nonatomic, nonnull, readonly) NSString *primeExponentQ;
+@property(nonatomic, nonnull, readonly) NSString *crtCoefficient;
 
--(instancetype) initWithDict:(NSDictionary<NSString *, id> *)dict;
+- (instancetype)initWithVersion:(NSInteger)version
+                      keyLength:(NSInteger)keyLength
+                        modulus:(NSString *)modulus
+                 publicExponent:(NSInteger)publicExponent
+                privateExponent:(NSString *)privateExponent
+                         primeP:(NSString *)primeP
+                         primeQ:(NSString *)primeQ
+                 primeExponentP:(NSString *)primeExponentP
+                 primeExponentQ:(NSString *)primeExponentQ
+                 crtCoefficient:(NSString *)crtCoefficient;
 @end
 
 @interface TUTKeyPair : NSObject
-@property(nonatomic, nonnull) TUTPublicKey *publicKey;
-@property(nonatomic, nonnull) TUTPrivateKey *privateKey;
+@property(nonatomic, nonnull, readonly) TUTPublicKey *publicKey;
+@property(nonatomic, nonnull, readonly) TUTPrivateKey *privateKey;
+
+- (instancetype)initWithPublicKey:(TUTPublicKey *)publicKey
+                       privateKey:(TUTPrivateKey *)privateKey;
 @end
 
 /**
