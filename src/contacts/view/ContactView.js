@@ -1,6 +1,5 @@
 // @flow
 import m from "mithril"
-import stream from "mithril/stream/stream.js"
 import {ViewSlider} from "../../gui/base/ViewSlider"
 import {ColumnType, ViewColumn} from "../../gui/base/ViewColumn"
 import {ContactViewer} from "./ContactViewer"
@@ -13,7 +12,7 @@ import {ContactTypeRef} from "../../api/entities/tutanota/Contact"
 import {ContactListView} from "./ContactListView"
 import {lang} from "../../misc/LanguageViewModel"
 import {assertNotNull, neverNull, noOp} from "../../api/common/utils/Utils"
-import {erase, load, loadAll, setup, update} from "../../api/main/Entity"
+import {erase, load, loadAll, update} from "../../api/main/Entity"
 import {ContactMergeAction, GroupType, Keys, OperationType} from "../../api/common/TutanotaConstants"
 import {assertMainOrNode, isApp} from "../../api/common/Env"
 import type {Shortcut} from "../../misc/KeyManager"
@@ -48,6 +47,7 @@ import {createDropDownButton} from "../../gui/base/Dropdown";
 import {ActionBar} from "../../gui/base/ActionBar"
 import {SidebarSection} from "../../gui/SidebarSection"
 import {ofClass, promiseMap} from "../../api/common/utils/PromiseUtils"
+
 assertMainOrNode()
 
 export class ContactView implements CurrentView {
@@ -272,7 +272,7 @@ export class ContactView implements CurrentView {
 						return locator
 							.contactModel
 							.contactListId()
-							.then(contactListId => promiseMap(contactList, (contact) => setup(contactListId, contact)))
+							.then(contactListId => locator.entityClient.setupMultipleEntities(contactListId, contactList))
 							.then(() => contactList.length)
 					}))
 				}

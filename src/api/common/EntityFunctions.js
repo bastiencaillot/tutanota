@@ -54,9 +54,9 @@ export function resolveTypeReference(typeRef: TypeRef<any>): Promise<TypeModel> 
 		return Promise.reject(new Error("Cannot find TypeRef: " + JSON.stringify(typeRef)))
 	} else {
 		return modelMap[typeRef.type]()
-		              .then(module => {
-			              return module._TypeModel
-		              })
+			.then(module => {
+				return module._TypeModel
+			})
 	}
 }
 
@@ -71,6 +71,27 @@ export function _setupEntity<T>(listId: ?Id, instance: T, target: EntityRestInte
 		}
 		return target.entityRequest((instance: any)._type, HttpMethod.POST, listId, null, instance, null, extraHeaders).then(val => {
 			return ((val: any): Id)
+		})
+	})
+}
+
+
+export function _setupEntities<T>(listId: ?Id, instances: Array<T>, target: EntityRestInterface, extraHeaders?: Params): Promise<Array<Id>> {
+	// TODO split in chunks
+	const count = instances.length
+	if (count < 1) {
+		throw new Error("Must at least post one instance: " + JSON.stringify(instances))
+	}
+	return resolveTypeReference((instances[0]: any)._type).then(typeModel => {
+		_verifyType(typeModel)
+		if (typeModel.type === Type.ListElement) {
+			if (!listId) throw new Error("List id must be defined for LETs")
+		} else {
+			if (listId) throw new Error("List id must not be defined for ETs")
+		}
+		const queryParams = {count: count + ""} // tell the server that this is a POST_MULTIPLE request
+		return target.entityRequest((instances: any)._type, HttpMethod.POST, listId, null, instances, queryParams, extraHeaders).then(val => {
+			return ((val: any): Array<Id>)
 		})
 	})
 }

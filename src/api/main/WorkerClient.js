@@ -20,7 +20,6 @@ import {addSearchIndexDebugEntry} from "../../misc/IndexerDebugLogger"
 import type {WorkerInterface} from "../worker/WorkerImpl"
 import {exposeRemote} from "../common/WorkerProxy"
 import type {TypeModel} from "../common/EntityTypes"
-import {delay} from "../common/utils/PromiseUtils"
 
 assertMainOrNode()
 
@@ -164,6 +163,7 @@ export class WorkerClient implements EntityRestInterface {
 		return this._postRequest(new Request('tryReconnectEventBus', [closeIfOpen, enableAutomaticState, delay]))
 	}
 
+	//TODO not necessary to handle post multiple
 	restRequest<T>(path: string, method: HttpMethodEnum, queryParams: Params, headers: Params, body: ?string | ?Uint8Array, responseType: ?MediaTypeEnum, progressListener: ?ProgressListener): Promise<any> {
 		return this._postRequest(new Request('restRequest', Array.from(arguments)))
 	}
@@ -172,6 +172,7 @@ export class WorkerClient implements EntityRestInterface {
 		return this._postRequest(new Request('resolveSessionKey', arguments))
 	}
 
+	//TODO not necessary to handle post multiple
 	entityRequest<T>(typeRef: TypeRef<T>, method: HttpMethodEnum, listId: ?Id, id: ?Id, entity: ?T, queryParameter: ?Params): Promise<any> {
 		return this._postRequest(new Request('entityRequest', Array.from(arguments)))
 	}

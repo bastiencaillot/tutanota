@@ -6,7 +6,6 @@ import {ProgressMonitor} from "../../api/common/utils/ProgressMonitor";
 import {assignEventId, getTimeZone} from "../date/CalendarUtils";
 import type {CalendarEvent} from "../../api/entities/tutanota/CalendarEvent";
 import {CalendarEventTypeRef} from "../../api/entities/tutanota/CalendarEvent"
-import type {AlarmInfo} from "../../api/entities/sys/AlarmInfo";
 import {generateEventElementId} from "../../api/common/utils/CommonCalendarUtils";
 import {showProgressDialog} from "../../gui/dialogs/ProgressDialog";
 import {ParserError} from "../../misc/parsing/ParserCombinator";
@@ -15,13 +14,14 @@ import {lang} from "../../misc/LanguageViewModel";
 import {parseCalendarFile, serializeCalendar} from "./CalendarImporter";
 import {loadAll, loadMultiple} from "../../api/main/Entity"
 import {elementIdPart, isSameId, listIdPart} from "../../api/common/utils/EntityUtils"
-import {UserAlarmInfoTypeRef} from "../../api/entities/sys/UserAlarmInfo"
 import type {UserAlarmInfo} from "../../api/entities/sys/UserAlarmInfo"
+import {UserAlarmInfoTypeRef} from "../../api/entities/sys/UserAlarmInfo"
 import {stringToUtf8Uint8Array} from "../../api/common/utils/Encoding"
 import {createFile} from "../../api/entities/tutanota/File"
 import {convertToDataFile} from "../../api/common/DataFile"
-import {delay, ofClass, promiseMap} from "../../api/common/utils/PromiseUtils"
+import {ofClass, promiseMap} from "../../api/common/utils/PromiseUtils"
 import {locator} from "../../api/main/MainLocator"
+import {flat} from "../../api/common/utils/ArrayUtils"
 
 export function showCalendarImportDialog(calendarGroupRoot: CalendarGroupRoot) {
 	fileController.showFileChooser(true, ["ical", "ics", "ifb", "icalendar"])
@@ -40,12 +40,11 @@ export function showCalendarImportDialog(calendarGroupRoot: CalendarGroupRoot) {
 					              events.forEach((event) => {
 						              event.uid && uidToEvent.set(event.uid, event)
 					              })
-					              return promiseMap(parsedEvents, (events: Iterable<{event: CalendarEvent, alarms: Array<AlarmInfo>}>) => {
-						              return promiseMap(events, ({event, alarms}) => {
-							              // Don't try to create event which we already have
-							              if (event.uid && uidToEvent.has(event.uid)) {
-								              return
-							              }
+					              const flatParsedEvents = flat(parsedEvents)
+					              // Don't try to create event which we already have
+					              const eventsForCreation = flatParsedEvents
+						              .filter(({event}) => !(event.uid && uidToEvent.has(event.uid)))
+						              .map(({event, alarms}) => {
 							              event.uid && uidToEvent.set(event.uid, event)
 
 							              const repeatRule = event.repeatRule
@@ -60,12 +59,9 @@ export function showCalendarImportDialog(calendarGroupRoot: CalendarGroupRoot) {
 								              alarmInfo.alarmIdentifier = generateEventElementId(Date.now())
 							              }
 							              assignEventId(event, zone, calendarGroupRoot)
-							              return locator.calendarFacade.createCalendarEvent(event, alarms, null)
-							                           .then(() => progressMonitor.workDone(1))
-							                           .then(() => delay(100))
+							              return {event, alarms}
 						              })
-					              })
-
+					              locator.calendarFacade.createCalendarEvents(eventsForCreation, progressMonitor)
 				              })
 		              return showProgressDialog("importCalendar_label", importPromise.then(() => progress(100)), progress)
 	              })

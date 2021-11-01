@@ -41,7 +41,7 @@ export interface EntityRestInterface {
 	 * @param queryParams
 	 * @return Resolves the entity / list of Entities delivered by the server or the elementId of the created entity.
 	 */
-	entityRequest<T>(typeRef: TypeRef<T>, method: HttpMethodEnum, listId: ?Id, id: ?Id, entity: ?T, queryParameter: ?Params, extraHeaders?: Params): Promise<?T | T[] | Id>;
+	entityRequest<T>(typeRef: TypeRef<T>, method: HttpMethodEnum, listId: ?Id, id: ?Id, entity: ?T | T[], queryParameter: ?Params, extraHeaders?: Params): Promise<?T | T[] | Id | Id[]>;
 
 	/**
 	 * Must be called when entity events are received.
@@ -70,7 +70,10 @@ export class EntityRestClient implements EntityRestInterface {
 	}
 
 
-	entityRequest<T>(typeRef: TypeRef<T>, method: HttpMethodEnum, listId: ?Id, id: ?Id, entity: ?T, queryParameter: ?Params, extraHeaders?: Params): Promise<any> {
+	entityRequest<T>(typeRef: TypeRef<T>, method: HttpMethodEnum, listId: ?Id, id: ?Id, entity: ?T | T[], queryParameter: ?Params, extraHeaders?: Params): Promise<any> {
+		if (method !== HttpMethod.POST && Array.isArray(entity)) {
+			throw new Error("Arrays of entities are only allowed in PostMultiple requests: " + method + ", " + JSON.stringify(entity))
+		}
 		return resolveTypeReference(typeRef).then(model => {
 			let path = typeRefToPath(typeRef)
 			if (listId) {
@@ -87,12 +90,20 @@ export class EntityRestClient implements EntityRestInterface {
 			}
 			headers['v'] = model.version
 			if (method === HttpMethod.POST) {
-				let sk = setNewOwnerEncSessionKey(model, (entity: any))
-				return encryptAndMapToLiteral(model, entity, sk).then(encryptedEntity => {
+				const encryptedEntity = Array.isArray(entity)
+					? promiseMap(entity, e => {
+						const sk = setNewOwnerEncSessionKey(model, (entity: any))
+						return encryptAndMapToLiteral(model, e, sk)
+					})
+					: encryptAndMapToLiteral(model, entity, setNewOwnerEncSessionKey(model, (entity: any)))
+				return encryptedEntity.then(encryptedEntity => {
 					// we do not make use of the PersistencePostReturn anymore but receive all updates via PUSH only
 					return this._restClient.request(path, method, queryParams, headers, JSON.stringify(encryptedEntity), MediaType.Json)
 					           .then(persistencePostReturn => {
-						           return JSON.parse(persistencePostReturn).generatedId
+						           const postReturn = JSON.parse(persistencePostReturn)
+						           return Array.isArray(postReturn)
+							           ? postReturn.map(e => e.generatedId) // TODO only return Ids not instances for post multiple!
+							           : postReturn.generatedId
 					           })
 				})
 			} else if (method === HttpMethod.PUT) {

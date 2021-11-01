@@ -46,6 +46,7 @@ import {createUserAreaGroupPostData} from "../../entities/tutanota/UserAreaGroup
 import {ofClass, promiseMap} from "../../common/utils/PromiseUtils"
 import {flat, flatMap, groupBy, groupByAndMapUniquely} from "../../common/utils/ArrayUtils"
 import {getFromMap} from "../../common/utils/MapUtils"
+import {ProgressMonitor} from "../../common/utils/ProgressMonitor"
 
 assertWorkerOrNode()
 
@@ -66,6 +67,39 @@ export class CalendarFacade {
 		this._groupManagementFacade = groupManagementFacade
 		this._entityRestCache = entityRestCache
 		this._entity = new EntityClient(entityRestCache)
+	}
+
+	async createCalendarEvents(events: Array<{event: CalendarEvent, alarms: Array<AlarmInfo>}>, progressMonitor: ProgressMonitor): Promise<void> {
+		const user = this._loginFacade.getLoggedInUser()
+		const eventsWithAlarms = await promiseMap(events, ({event, alarms}) => {
+			// TODO create alarms in one post multiple request
+			return this._createAlarms(user, event, alarms)
+			           .then(userAlarmIdsWithAlarmNotifications => {
+				           event.alarmInfos.length = 0
+				           userAlarmIdsWithAlarmNotifications.forEach(([id]) => {
+					           event.alarmInfos.push(id)
+				           })
+				           return {event, alarms, userAlarmIdsWithAlarmNotifications}
+			           })
+		})
+		const eventsByListId = groupBy(eventsWithAlarms, eventWrapper => getListId(eventWrapper.event))
+		for (const [listId, events] of eventsByListId) {
+			await this._entity.setupMultipleEntities(listId, events.map(e => e.event))
+			          .then(() => {
+				          // TODO post alarms in one request?
+				          promiseMap(events, ({event, alarms, userAlarmIdsWithAlarmNotifications}) => {
+					          if (userAlarmIdsWithAlarmNotifications.length > 0) {
+						          const alarmNotifications = userAlarmIdsWithAlarmNotifications
+							          .map(([_, alarm]) => alarm)
+						          return this._entity.loadAll(
+							          PushIdentifierTypeRef,
+							          neverNull(this._loginFacade.getLoggedInUser().pushIdentifierList).list
+						          ).then((pushIdentifierList) =>
+							          this._sendAlarmNotifications(alarmNotifications, pushIdentifierList))
+					          }
+				          }).then(() => progressMonitor.workDone(events.length))
+			          })
+		}
 	}
 
 	createCalendarEvent(event: CalendarEvent, alarmInfos: Array<AlarmInfo>, oldEvent: ?CalendarEvent): Promise<void> {
