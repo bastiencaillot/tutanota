@@ -8,7 +8,7 @@ extension EncryptedFileInfo : Codable {}
 
 /// High-level cryptographic operations API
 class CryptoFacade {
-  // Serial queue for executing crypto tasks
+  /// Serial queue for executing crypto tasks
   private let queue = DispatchQueue(
     label: "de.tutao.encryption",
     qos: .userInitiated

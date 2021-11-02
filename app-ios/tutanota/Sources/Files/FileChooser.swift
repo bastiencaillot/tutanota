@@ -23,7 +23,7 @@ class TUTFileChooser: NSObject, UIImagePickerControllerDelegate, UINavigationCon
   private var resultHandler: ResponseCallback<[String]>?
   private var popOverPresentationController: UIPopoverPresentationController?
 
-  @objc init(viewController: UIViewController) {
+  init(viewController: UIViewController) {
     self.supportedUTIs = ["public.content", "public.archive", "public.data"]
     self.sourceController = viewController
     self.imagePickerController = UIImagePickerController()

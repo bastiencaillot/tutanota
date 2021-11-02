@@ -1,12 +1,12 @@
 import Foundation
 
-let TAG = "de.tutao.tutanota.notificationkey."
+private let TAG = "de.tutao.tutanota.notificationkey."
 
 class KeychainManager : NSObject {
   func storeKey(_ key: Data, withId keyId: String) throws {
     let keyTag = self.keyTagFromKeyId(keyId: keyId)
     
-    let existingKey = try? self.getKeyImpl(keyId: keyId)
+    let existingKey = try? self.getKey(keyId: keyId)
     
     let status: OSStatus
     
@@ -35,20 +35,6 @@ class KeychainManager : NSObject {
   }
   
   func getKey(keyId: String) throws -> Data? {
-    try self.getKeyImpl(keyId: keyId)
-  }
-  
-  func removePushIdentifierKeys() throws {
-    let deleteQuery: [String: Any] = [
-      kSecClass as String: kSecClassKey
-    ]
-    let status = SecItemDelete(deleteQuery as CFDictionary)
-    if status != errSecSuccess {
-      throw TUTErrorFactory .createError("Could not delete the keys, status: \(status)")
-    }
-  }
-  
-  private func getKeyImpl(keyId: String) throws -> Data? {
     let keyTag = self.keyTagFromKeyId(keyId: keyId)
     let getQuery: [String : Any] = [
       kSecClass as String: kSecClassKey,
@@ -63,6 +49,16 @@ class KeychainManager : NSObject {
       return (item as! Data)
     } else {
       return nil
+    }
+  }
+  
+  func removePushIdentifierKeys() throws {
+    let deleteQuery: [String: Any] = [
+      kSecClass as String: kSecClassKey
+    ]
+    let status = SecItemDelete(deleteQuery as CFDictionary)
+    if status != errSecSuccess {
+      throw TUTErrorFactory .createError("Could not delete the keys, status: \(status)")
     }
   }
   

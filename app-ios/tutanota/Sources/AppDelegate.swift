@@ -36,10 +36,6 @@ class AppDelegate : UIResponder,
     let keychainManager = KeychainManager()
     self.alarmManager = AlarmManager(keychainManager: keychainManager, userPreference: userPreferences)
     self.window = UIWindow(frame: UIScreen.main.bounds)
-//    self.viewController = TUTViewController(
-//      preferenceFacade: self.userPreferences,
-//      alarmManager: self.alarmManager
-//    )
     self.viewController = ViewController(
       crypto: CryptoFacade(),
       contactsSource: ContactsSource(),
@@ -91,7 +87,7 @@ class AppDelegate : UIResponder,
   }
 }
 
-func deviceTokenAsString(deviceToken: Data) -> String? {
+fileprivate func deviceTokenAsString(deviceToken: Data) -> String? {
   if deviceToken.isEmpty {
     return nil
   }

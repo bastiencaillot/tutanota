@@ -1,5 +1,6 @@
 import Foundation
 
+/// Structure to exchange messages remotely
 struct RemoteMessage : Encodable {
   let id: String
   let type: RemoteMessageType
@@ -26,25 +27,6 @@ struct ResponseError : Codable {
   let name: String
   let message: String
 }
-
-/// Swift magic
-/// Swift does not allow protocol to conform to itself, even when it's fine so we can't pass erased Encodable variable into
-/// a function that accepts encodable. But we can call methods on such a thing and Swift will make a trampoline for us
-/// (basically a boxed value with dynamic dispatch).
-///
-/// see https://stackoverflow.com/a/54968959
-/// see https://stackoverflow.com/a/43408193
-/// see https://github.com/apple/swift/blob/main/docs/GenericsManifesto.md#opening-existentials
-fileprivate extension Encodable {
-  func openEncode(into encoder: Encoder) throws {
-    try self.encode(to: encoder)
-  }
-  
-  func openEncode<C: KeyedEncodingContainerProtocol>(into container: inout C, forKey key: C.Key) throws {
-    try container.encode(self, forKey: key)
-  }
-}
-
 
 enum RemoteMessageType {
   case request(value: String)
@@ -76,5 +58,23 @@ extension RemoteMessageType : Encodable {
     case let .request(value: value):
       try value.encode(to: encoder)
     }
+  }
+}
+
+/// Swift magic
+/// Swift does not allow protocol to conform to itself, even when it's fine so we can't pass erased Encodable variable into
+/// a function that accepts encodable. But we can call methods on such a thing and Swift will make a trampoline for us
+/// (basically a boxed value with dynamic dispatch).
+///
+/// see https://stackoverflow.com/a/54968959
+/// see https://stackoverflow.com/a/43408193
+/// see https://github.com/apple/swift/blob/main/docs/GenericsManifesto.md#opening-existentials
+fileprivate extension Encodable {
+  func openEncode(into encoder: Encoder) throws {
+    try self.encode(to: encoder)
+  }
+  
+  func openEncode<C: KeyedEncodingContainerProtocol>(into container: inout C, forKey key: C.Key) throws {
+    try container.encode(self, forKey: key)
   }
 }

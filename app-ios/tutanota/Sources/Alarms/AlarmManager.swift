@@ -1,11 +1,5 @@
 import Foundation
 
-enum Operation: String, SimpleStringDecodable, Codable {
-  case Create = "0"
-  case Update = "1"
-  case Delete = "2"
-}
-
 // iOS (13.3 at least) has a limit on saved alarms which empirically inferred to be.
 // It means that only *last* 64 alarms are stored in the internal plist by SpringBoard.
 // If we schedule too many some alarms will not be fired. We should be careful to not
@@ -13,9 +7,9 @@ enum Operation: String, SimpleStringDecodable, Codable {
 //
 // Better approach would be to calculate occurences from all alarms, sort them and take
 // the first 64. Or schedule later ones first so that newer ones have higher priority.
-let EVENTS_SCHEDULED_AHEAD = 24
+private let EVENTS_SCHEDULED_AHEAD = 24
 
-let MISSED_NOTIFICATION_TTL_SEC: Int64 = 30 * 24 * 60 * 60; // 30 days
+private let MISSED_NOTIFICATION_TTL_SEC: Int64 = 30 * 24 * 60 * 60; // 30 days
 
 enum HttpStatusCode: Int {
   case ok = 200
@@ -159,7 +153,7 @@ class AlarmManager {
     }
   }
   
-  func hasNotificationTTLExpired() -> Bool {
+  private func hasNotificationTTLExpired() -> Bool {
     guard let lastMissedNotificationCheckTime = userPreference.lastMissedNotificationCheckTime else {
       return false
     }
@@ -168,10 +162,10 @@ class AlarmManager {
     return sinceNow < 0 && Int64(abs(sinceNow)) > MISSED_NOTIFICATION_TTL_SEC
   }
   
-  func resetStoredState() {
+  private func resetStoredState() {
     TUTSLog("Resetting stored state")
     self.unscheduleAllAlarms(userId: nil)
-    userPreference.clear()
+    self.userPreference.clear()
     do {
       try keychainManager.removePushIdentifierKeys()
     } catch {
@@ -179,7 +173,7 @@ class AlarmManager {
     }
   }
   
-  func rescheduleAlarms() {
+  private func rescheduleAlarms() {
     TUTSLog("Re-scheduling alarms")
     DispatchQueue.global(qos: .background).async {
       for notification in self.savedAlarms() {
@@ -420,18 +414,18 @@ func stringToCustomId(customId: String) -> String {
 /**
  Gets suspension time from the request in seconds
  */
-func extractSuspensionTime(from httpResponse: HTTPURLResponse) -> Int {
+fileprivate func extractSuspensionTime(from httpResponse: HTTPURLResponse) -> Int {
   let retryAfterHeader =
     (httpResponse.allHeaderFields["Retry-After"] ?? httpResponse.allHeaderFields["Suspension-Time"])
     as! String?
   return retryAfterHeader.flatMap { Int($0) } ?? 0
 }
 
-struct OcurrenceInfo {
+fileprivate struct OcurrenceInfo {
   let occurrence: Int
   let ocurrenceTime: Date
 }
 
-private func ocurrenceIdentifier(alarmIdentifier: String, occurrence: Int) -> String {
+fileprivate func ocurrenceIdentifier(alarmIdentifier: String, occurrence: Int) -> String {
   return "\(alarmIdentifier)#\(occurrence)"
 }

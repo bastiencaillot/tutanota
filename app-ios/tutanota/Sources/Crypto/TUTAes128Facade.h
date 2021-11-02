@@ -1,11 +1,3 @@
-//
-//  TUTAes128Facade.h
-//
-//  Created by Tutao GmbH on 20.10.16.
-//  Copyright © 2016 Tutao GmbH. All rights reserved.
-//
-
-
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSInteger const TUTAO_IV_BYTE_SIZE;

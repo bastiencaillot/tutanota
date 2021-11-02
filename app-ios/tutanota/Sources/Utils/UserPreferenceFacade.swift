@@ -1,11 +1,3 @@
-//
-//  UserPreferenceFacade.swift
-//  tutanota
-//
-//  Created by Tutao GmbH on 10/15/21.
-//  Copyright © 2021 Tutao GmbH. All rights reserved.
-//
-
 import Foundation
 
 fileprivate let SSE_INFO_KEY = "sseInfo"

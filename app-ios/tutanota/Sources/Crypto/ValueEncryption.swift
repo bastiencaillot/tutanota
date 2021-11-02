@@ -1,3 +1,5 @@
+// Helper functions for writing decryption of structures.
+
 import Foundation
 
 typealias Key = Data

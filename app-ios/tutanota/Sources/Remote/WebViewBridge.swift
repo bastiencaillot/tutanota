@@ -44,9 +44,9 @@ class WebViewBridge : NSObject {
   }
   
   func injectBridge() {
-    // We need to implement this bridging from native because we don't know if we are an iOS app
-    // before the init event.
-    // From JS we expect window.nativeApp.invoke to be there
+    // We need to implement this bridging from here because we don't know if we are an iOS app
+    // before the init is sent from here.
+    // From JS we expect window.nativeApp.invoke to be there.
     let js =
       """
       window.nativeApp = {
