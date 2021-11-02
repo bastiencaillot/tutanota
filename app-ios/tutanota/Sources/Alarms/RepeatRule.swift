@@ -36,7 +36,7 @@ struct EncryptedRepeatRule : Codable, Hashable {
   let interval: String
   let timeZone: String
   let endType: String
-  let endValue: String
+  let endValue: String?
 }
 
 struct RepeatRule {
@@ -52,7 +52,9 @@ extension RepeatRule {
     self.interval = try decrypt(base64: encrypted.interval, key: sessionKey)
     self.timeZone = try decrypt(base64: encrypted.timeZone, key: sessionKey)
     let endType: EndType = try decrypt(base64: encrypted.endType, key: sessionKey)
-    let endValue: Int64 = try decrypt(base64: encrypted.endValue, key: sessionKey)
-    self.endCondition = RepeatEndCondition(endType: endType, endValue: endValue)
+    let endValue: Int64? = try encrypted.endValue.map { endValue in
+      return try decrypt(base64: endValue, key: sessionKey)
+    }
+    self.endCondition = RepeatEndCondition(endType: endType, endValue: endValue ?? 0)
   }
 }

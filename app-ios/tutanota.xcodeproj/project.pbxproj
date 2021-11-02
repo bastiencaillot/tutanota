@@ -98,6 +98,8 @@
 		3D63A0E5233D0C1400D05259 /* TUTLogTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D63A0E4233D0C1400D05259 /* TUTLogTest.m */; };
 		3D652B5820F8DC1600DF9962 /* build in Resources */ = {isa = PBXBuildFile; fileRef = 3D652B5720F8DC1500DF9962 /* build */; };
 		3D6A0AEA212C1701001CD791 /* CompatibilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6A0AE9212C1701001CD791 /* CompatibilityTest.m */; settings = {COMPILER_FLAGS = "-Itutanota/include"; }; };
+		3D73DA312731953E008E7A8A /* RemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D73DA302731953E008E7A8A /* RemoteProtocol.swift */; };
+		3D73DA322731953E008E7A8A /* RemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D73DA302731953E008E7A8A /* RemoteProtocol.swift */; };
 		3D84F56B2721B92C00858A58 /* MissedNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56A2721B92C00858A58 /* MissedNotification.swift */; };
 		3D84F56D2722CEF900858A58 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56C2722CEF900858A58 /* FileUtils.swift */; };
 		3D84F56E2722CEF900858A58 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D84F56C2722CEF900858A58 /* FileUtils.swift */; };
@@ -213,6 +215,8 @@
 		3DAA23A9267A208200219051 /* UIColorExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAA23A8267A208200219051 /* UIColorExtensionsTest.swift */; };
 		3DB07C7B27303F0600BFBB4D /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB07C7A27303F0600BFBB4D /* Keys.swift */; };
 		3DB07C7C27303F0600BFBB4D /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB07C7A27303F0600BFBB4D /* Keys.swift */; };
+		3DBE94BA273147830077A6EA /* WebViewBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBE94B9273147830077A6EA /* WebViewBridge.swift */; };
+		3DBE94BB273147830077A6EA /* WebViewBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBE94B9273147830077A6EA /* WebViewBridge.swift */; };
 		3DC299FA267358AF00E1E79F /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299F9267358AF00E1E79F /* ThemeManager.swift */; };
 		3DC299FB267358AF00E1E79F /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299F9267358AF00E1E79F /* ThemeManager.swift */; };
 		3DC299FD2673668000E1E79F /* QueryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC299FC2673668000E1E79F /* QueryUtils.swift */; };
@@ -261,6 +265,7 @@
 		3D63A0E4233D0C1400D05259 /* TUTLogTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TUTLogTest.m; sourceTree = "<group>"; };
 		3D652B5720F8DC1500DF9962 /* build */ = {isa = PBXFileReference; lastKnownFileType = folder; name = build; path = ../../build; sourceTree = "<group>"; };
 		3D6A0AE9212C1701001CD791 /* CompatibilityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompatibilityTest.m; sourceTree = "<group>"; };
+		3D73DA302731953E008E7A8A /* RemoteProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProtocol.swift; sourceTree = "<group>"; };
 		3D84F56A2721B92C00858A58 /* MissedNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissedNotification.swift; sourceTree = "<group>"; };
 		3D84F56C2722CEF900858A58 /* FileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtils.swift; sourceTree = "<group>"; };
 		3D84F56F2722E4B700858A58 /* FileFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileFacade.swift; sourceTree = "<group>"; };
@@ -362,6 +367,7 @@
 		3DAA23A5267A202000219051 /* tutanotaTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "tutanotaTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		3DAA23A8267A208200219051 /* UIColorExtensionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensionsTest.swift; sourceTree = "<group>"; };
 		3DB07C7A27303F0600BFBB4D /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
+		3DBE94B9273147830077A6EA /* WebViewBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewBridge.swift; sourceTree = "<group>"; };
 		3DC299F9267358AF00E1E79F /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		3DC299FC2673668000E1E79F /* QueryUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryUtils.swift; sourceTree = "<group>"; };
 		3DCE7AA12719D04B0085E40D /* UserPreferenceFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferenceFacade.swift; sourceTree = "<group>"; };
@@ -434,9 +440,19 @@
 			path = Keychain;
 			sourceTree = "<group>";
 		};
+		3D73DA2F2731951F008E7A8A /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				3DBE94B9273147830077A6EA /* WebViewBridge.swift */,
+				3D73DA302731953E008E7A8A /* RemoteProtocol.swift */,
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
 		3D74536121089D2200B16F2E /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				3D73DA2F2731951F008E7A8A /* Remote */,
 				3D378ED22536F3A80001F1F3 /* tutanota-Bridging-Header.h */,
 				3D57BEB322B796AC00205B1B /* Alarms */,
 				3D6C6D0522B7707B00289576 /* Keychain */,
@@ -1538,12 +1554,14 @@
 				3D9B12AA27219538002B46A1 /* AlarmInfo.swift in Sources */,
 				3D378F052536F79A0001F1F3 /* TUTSubKeys.m in Sources */,
 				3DCE7AA8271D63BF0085E40D /* ViewController.swift in Sources */,
+				3DBE94BB273147830077A6EA /* WebViewBridge.swift in Sources */,
 				3D378F082536F79A0001F1F3 /* TUTCrypto.m in Sources */,
 				3D378F092536F79A0001F1F3 /* TUTLog.m in Sources */,
 				3D9B129E272189BB002B46A1 /* AlarmModel.swift in Sources */,
 				3D84F5832723225C00858A58 /* Utils.swift in Sources */,
 				3DE1E446266672870018C9DE /* UIColor+utils.swift in Sources */,
 				3D0EB1FA26F49E36002E5102 /* AppDelegate.swift in Sources */,
+				3D73DA322731953E008E7A8A /* RemoteProtocol.swift in Sources */,
 				3D9B129B27216DE0002B46A1 /* Response.swift in Sources */,
 				3D9B12AD27219623002B46A1 /* NotificationSessionKey.swift in Sources */,
 			);
@@ -1557,6 +1575,7 @@
 				3D378EE72536F51F0001F1F3 /* FileChooser.swift in Sources */,
 				3D9B12A027218AF9002B46A1 /* RepeatRule.swift in Sources */,
 				3D4F1BFA26EBADE500E87BF5 /* TUTBigNum.m in Sources */,
+				3D73DA312731953E008E7A8A /* RemoteProtocol.swift in Sources */,
 				3DB07C7B27303F0600BFBB4D /* Keys.swift in Sources */,
 				3D84F5822723225C00858A58 /* Utils.swift in Sources */,
 				3D9B12B42721A1E2002B46A1 /* TUTErrorFactory.m in Sources */,
@@ -1581,6 +1600,7 @@
 				3DE7B3442135855F003415BE /* TUTSubKeys.m in Sources */,
 				3D84F56D2722CEF900858A58 /* FileUtils.swift in Sources */,
 				3DCE7AA7271D63BF0085E40D /* ViewController.swift in Sources */,
+				3DBE94BA273147830077A6EA /* WebViewBridge.swift in Sources */,
 				3D84F5762723112400858A58 /* FileViewer.swift in Sources */,
 				3D891F0B2105B12F0031E528 /* TUTCrypto.m in Sources */,
 				3D63A0E3233D009E00D05259 /* TUTLog.m in Sources */,

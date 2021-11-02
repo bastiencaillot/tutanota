@@ -45,11 +45,10 @@ static const NSString *const PUBLIC_EXPONENT_STRING = @"65537";
 }
 @end
 
-@implementation TUTPrivateKey : TUTPublicKey
+@implementation TUTPrivateKey : NSObject
 - (instancetype)initWithVersion:(NSInteger)version
                       keyLength:(NSInteger)keyLength
                         modulus:(NSString *)modulus
-                 publicExponent:(NSInteger)publicExponent
                 privateExponent:(NSString *)privateExponent
                          primeP:(NSString *)primeP
                          primeQ:(NSString *)primeQ
@@ -57,12 +56,15 @@ static const NSString *const PUBLIC_EXPONENT_STRING = @"65537";
                  primeExponentQ:(NSString *)primeExponentQ
                  crtCoefficient:(NSString *)crtCoefficient {
 
-  self = [super initWithVersion:version keyLength:keyLength modulus:modulus publicExponent:publicExponent];
+  self = [super init];
+  _version = version;
+  _keyLength = keyLength;
+  _modulus = modulus;
   _privateExponent = privateExponent;
   _primeP = primeP;
   _primeQ = primeQ;
   _primeExponentP = primeExponentP;
-  _primeExponentQ = self.primeExponentQ;
+  _primeExponentQ = primeExponentQ;
   _crtCoefficient = crtCoefficient;
   return self;
 }
@@ -248,7 +250,6 @@ static const NSString *const PUBLIC_EXPONENT_STRING = @"65537";
   let privateKey = [[TUTPrivateKey alloc] initWithVersion:version
                                                 keyLength:keyLength
                                                 modulus:modulus
-                                                publicExponent:PUBLIC_EXPONENT
                                                 privateExponent:[TUTBigNum toB64:key->d]
                                                 primeP:[TUTBigNum toB64:key->p]
                                                 primeQ:[TUTBigNum toB64:key->q]

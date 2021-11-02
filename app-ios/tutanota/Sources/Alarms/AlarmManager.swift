@@ -37,6 +37,21 @@ class AlarmManager {
     self.fetchQueue.maxConcurrentOperationCount = 1
   }
   
+  func initialize() {
+    if self.hasNotificationTTLExpired() {
+      self.resetStoredState()
+    } else {
+      self.fetchMissedNotifications { err in
+        if let err = err {
+          TUTSLog("Failed to fetch/process missed notification \(err)")
+        } else {
+          TUTSLog("Successfully processed missed notification")
+        }
+      }
+      self.rescheduleAlarms()
+    }
+  }
+  
   func fetchMissedNotifications(_ completionHandler: @escaping (Error?) -> Void) {
     TUTSLog("Adding fetch notificaiton operation to queue")
     self.fetchQueue.addAsyncOperation {[weak self] queueCompletionHandler in
@@ -347,7 +362,7 @@ class AlarmManager {
     let alarmTime = AlarmModel.alarmTime(trigger: trigger, eventTime: ocurrenceInfo.ocurrenceTime)
     
     if alarmTime.timeIntervalSinceNow < 0 {
-      TUTSLog("Even alarm is in the past \(alarmIdentifier) \(alarmTime)")
+      TUTSLog("Alarm is in the past \(alarmIdentifier) \(alarmTime)")
       return
     }
     let fortNightSeconds: Double = 60 * 60 * 24 * 14

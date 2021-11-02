@@ -10,7 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface TUTPublicKey : NSObject
 @property(nonatomic, readonly) NSInteger version;
 @property(nonatomic, readonly) NSInteger keyLength;
-@property(nonatomic, readonly) NSString *modulus;
+@property(nonatomic, nonnull, readonly) NSString *modulus;
 @property(nonatomic, readonly) NSInteger publicExponent;
 
 -(instancetype)initWithVersion:(NSInteger)version
@@ -19,7 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
                 publicExponent:(NSInteger)publicExponent;
 @end
 
-@interface TUTPrivateKey : TUTPublicKey
+@interface TUTPrivateKey : NSObject
+@property(nonatomic, readonly) NSInteger version;
+@property(nonatomic, readonly) NSInteger keyLength;
+@property(nonatomic, nonnull, readonly) NSString *modulus;
 @property(nonatomic, nonnull, readonly) NSString *privateExponent;
 @property(nonatomic, nonnull, readonly) NSString *primeP;
 @property(nonatomic, nonnull, readonly) NSString *primeQ;
@@ -30,7 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithVersion:(NSInteger)version
                       keyLength:(NSInteger)keyLength
                         modulus:(NSString *)modulus
-                 publicExponent:(NSInteger)publicExponent
                 privateExponent:(NSString *)privateExponent
                          primeP:(NSString *)primeP
                          primeQ:(NSString *)primeQ

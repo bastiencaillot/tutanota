@@ -31,7 +31,6 @@ struct PrivateKey : Codable {
   let version: Int
   let keyLength: Int
   let modulus: String
-  let publicExponent: Int
   let privateExponent: String
   let primeP: String
   let primeQ: String
@@ -45,7 +44,6 @@ extension PrivateKey {
     self.init(version: objcKey.version,
               keyLength: objcKey.keyLength,
               modulus: objcKey.modulus,
-              publicExponent: objcKey.publicExponent,
               privateExponent: objcKey.privateExponent,
               primeP: objcKey.primeP,
               primeQ: objcKey.primeQ,
@@ -59,7 +57,6 @@ extension PrivateKey {
     return TUTPrivateKey(version: version,
                          keyLength: keyLength,
                          modulus: modulus,
-                         publicExponent: publicExponent,
                          privateExponent: privateExponent,
                          primeP: primeP,
                          primeQ: primeQ,
