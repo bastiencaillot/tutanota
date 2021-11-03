@@ -341,7 +341,7 @@ async function buildDesktopClient(version) {
 	} else { // stage = host
 		const desktopHostOpts = Object.assign({}, desktopBaseOpts, {
 			version,
-			updateUrl: "http://localhost:9000/desktop-snapshot",
+			updateUrl: `${options.host}/client/build/desktop-snapshot`,
 			nameSuffix: "-snapshot",
 			notarize: false
 		})

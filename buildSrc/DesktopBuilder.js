@@ -86,7 +86,7 @@ export async function buildDesktop({
 	await electronBuilder.build({
 		_: ['build'],
 		win: targets.win32,
-		mac: targets.mac,
+		mac: targets.darwin,
 		linux: targets.linux,
 		publish: 'always',
 		project: distDir
@@ -149,13 +149,13 @@ async function rollupDesktop(dirname, outDir, version) {
  * e.g. keytar-v7.7.0-napi-v3-linux-x64.tar.gz for N-API v3
  */
 async function maybeGetKeytar(targets, napiVersion = 3) {
-	const trg = Object.keys(targets)
+	const target = Object.keys(targets)
 	                  .filter(t => targets[t] != null)
 	                  .filter(t => t !== process.platform)
-	if (trg.length === 0 || process.env.JENKINS) return
-	console.log("fetching prebuilt keytar for", trg, "N-API", napiVersion)
-	return Promise.all(trg.map(t => exec(
-		`prebuild-install --platform ${t} --target ${napiVersion} --tag-prefix v --runtime napi --verbose`,
+	if (target.length === 0 || process.env.JENKINS) return
+	console.log("fetching prebuilt keytar for", target, "N-API", napiVersion)
+	return Promise.all(target.map(t => exec(
+		`npx prebuild-install --platform ${t} --target ${napiVersion} --tag-prefix v --runtime napi --verbose`,
 		{
 			cwd: './node_modules/keytar/',
 			stdout: 'inherit'
